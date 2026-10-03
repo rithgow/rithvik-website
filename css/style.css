@@ -55,7 +55,9 @@
 
 html {
   scroll-behavior: auto;
-  scroll-padding-top: 70px;
+  scroll-padding-top: 0;
+  scrollbar-gutter: stable;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -110,8 +112,7 @@ canvas {
 ================================================== */
 
 .nav {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 20;
 
   min-height: 58px;
@@ -158,7 +159,7 @@ canvas {
     0 0 0 0
     color-mix(in srgb, var(--green) 35%, transparent);
 
-  animation: pulse 2.4s infinite;
+  animation: none;
 }
 
 .navlinks {
@@ -563,22 +564,15 @@ h1 {
 }
 
 .ticker-track {
-  width: max-content;
+  width: 100%;
 
   display: flex;
+  flex-wrap: wrap;
 
-  animation:
-    ticker 34s
-    linear
-    infinite;
+  animation: none;
 
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-body.is-scrolling .ticker-track {
-  animation-play-state: paused !important;
+  will-change: auto;
+  transform: none;
 }
 
 body.is-scrolling .card,
@@ -760,11 +754,15 @@ body.is-scrolling .contact-social {
 }
 
 .market-frame {
-  flex: 1;
+  flex: 0 0 320px;
 
-  contain: layout paint style;
+  width: 100%;
+  height: 320px;
+  min-height: 320px;
+  max-height: 320px;
 
-  min-height: 310px;
+  contain: size layout paint style;
+  overflow-anchor: none;
 
   margin: 22px 0;
 
@@ -782,7 +780,11 @@ tv-tickers {
   display: block;
 
   width: 100%;
-  min-height: 300px;
+  height: 320px;
+  min-height: 320px;
+  max-height: 320px;
+
+  overflow-anchor: none;
 }
 
 .market-placeholder {
@@ -1243,6 +1245,46 @@ body[data-weather="snow"] .sky-panel {
   }
 }
 
+
+
+/* ==================================================
+   HARD STABILITY PASS
+================================================== */
+
+body,
+main,
+.hero,
+.page-section,
+.signal-band,
+footer {
+  overflow-anchor: none;
+}
+
+.hero-copy,
+.page-section,
+.signal-band,
+footer,
+.instrument,
+.card,
+.job,
+.skillgroup {
+  transform: none;
+  will-change: auto;
+  backface-visibility: visible;
+}
+
+.sky-panel,
+.market-frame {
+  isolation: isolate;
+}
+
+.ticker {
+  overflow: hidden;
+}
+
+.tick {
+  flex: 0 0 auto;
+}
 
 /* ==================================================
    TABLET
