@@ -348,6 +348,20 @@
   }
 
 
+  document.addEventListener(
+    "site:toast",
+    event => {
+      if (event.detail) {
+        toast(
+          String(
+            event.detail
+          )
+        );
+      }
+    }
+  );
+
+
   // ==================================================
   // ENTRANCE
   // ==================================================
