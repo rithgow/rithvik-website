@@ -1110,6 +1110,62 @@
           now.watching.detail
         );
       }
+
+      const instagram =
+        get(
+          "#instagram-contact"
+        );
+
+      const instagramUrl =
+        data.socials
+          ?.instagram ||
+        "";
+
+      if (
+        instagram &&
+        instagramUrl
+      ) {
+        instagram.href =
+          instagramUrl;
+
+        instagram.target =
+          "_blank";
+
+        instagram.rel =
+          "noreferrer";
+
+        instagram.classList.remove(
+          "contact-social-pending"
+        );
+
+        instagram.removeAttribute(
+          "aria-disabled"
+        );
+
+        try {
+          const path =
+            new URL(
+              instagramUrl
+            ).pathname
+              .replaceAll(
+                "/",
+                ""
+              );
+
+          setText(
+            "#instagram-contact-label",
+            path
+              ? "@" + path
+              : "INSTAGRAM"
+          );
+        }
+        catch (error) {
+          setText(
+            "#instagram-contact-label",
+            "INSTAGRAM"
+          );
+        }
+      }
     }
     catch (error) {
       console.warn(
