@@ -78,7 +78,9 @@ body {
     Arial,
     sans-serif;
 
-  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
 }
 
 a {
@@ -199,6 +201,14 @@ canvas {
 .nav-meta strong {
   color: var(--green);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.wx-temp,
+.wx-grid strong,
+.instrument-number,
+.weather-table strong {
+  font-variant-numeric: tabular-nums;
 }
 
 
@@ -322,6 +332,8 @@ h1 {
 
 .sky-panel {
   position: relative;
+
+  contain: layout paint style;
 
   min-width: 0;
   min-height: 610px;
@@ -542,6 +554,8 @@ h1 {
 .ticker {
   overflow: hidden;
 
+  contain: layout paint style;
+
   background: var(--ink);
   color: var(--paper);
 
@@ -559,6 +573,18 @@ h1 {
     infinite;
 
   will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+body.is-scrolling .ticker-track {
+  animation-play-state: paused !important;
+}
+
+body.is-scrolling .card,
+body.is-scrolling .instrument,
+body.is-scrolling .contact-social {
+  transition: none !important;
 }
 
 .tick {
@@ -735,6 +761,8 @@ h1 {
 
 .market-frame {
   flex: 1;
+
+  contain: layout paint style;
 
   min-height: 310px;
 
@@ -1071,6 +1099,75 @@ tv-tickers {
 }
 
 
+
+.contact-stack {
+  margin-top: 28px;
+
+  display: grid;
+  gap: 0;
+
+  border-top: 1px solid #151b1e;
+}
+
+.contact-social {
+  min-height: 58px;
+
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 13px 0;
+
+  text-decoration: none;
+
+  border-bottom: 1px solid #151b1e;
+
+  color: #151b1e;
+
+  font-family: "IBM Plex Mono", monospace;
+
+  transition:
+    padding-left 0.15s ease,
+    background 0.15s ease;
+}
+
+.contact-social > span:first-child {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.contact-social strong {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.contact-social > span:last-child {
+  font-size: 16px;
+}
+
+a.contact-social:hover {
+  padding-left: 10px;
+
+  background:
+    color-mix(
+      in srgb,
+      #151b1e 8%,
+      transparent
+    );
+}
+
+.contact-social-pending {
+  opacity: 0.58;
+
+  cursor: default;
+}
+
 /* ==================================================
    FOOTER
 ================================================== */
@@ -1115,16 +1212,16 @@ body[data-weather="clear"] .sky-panel {
 }
 
 body[data-weather="cloudy"] .sky-panel {
-  filter: saturate(0.78);
+  --sky: #314850;
 }
 
 body[data-weather="rain"] .sky-panel,
 body[data-weather="storm"] .sky-panel {
-  filter: saturate(0.72) brightness(0.92);
+  --sky: #243840;
 }
 
 body[data-weather="snow"] .sky-panel {
-  filter: saturate(0.55) brightness(1.04);
+  --sky: #40545a;
 }
 
 
@@ -1294,6 +1391,12 @@ body[data-weather="snow"] .sky-panel {
   .signal-band h2 {
     font-size:
       clamp(58px, 18vw, 90px);
+  }
+
+  .contact-social {
+    grid-template-columns: 76px minmax(0, 1fr) auto;
+
+    gap: 12px;
   }
 
   footer {

@@ -375,6 +375,50 @@ setInterval(
 
 
 // ==================================================
+// ==================================================
+// SCROLL STATE / PAINT STABILITY
+// ==================================================
+
+let pageIsScrolling =
+  false;
+
+let scrollStopTimer =
+  null;
+
+window.addEventListener(
+  "scroll",
+  function () {
+    pageIsScrolling =
+      true;
+
+    document.body.classList.add(
+      "is-scrolling"
+    );
+
+    clearTimeout(
+      scrollStopTimer
+    );
+
+    scrollStopTimer =
+      setTimeout(
+        function () {
+          pageIsScrolling =
+            false;
+
+          document.body.classList.remove(
+            "is-scrolling"
+          );
+        },
+        140
+      );
+  },
+  {
+    passive: true
+  }
+);
+
+
+// ==================================================
 // RADAR / ATMOSPHERE CANVAS
 // ==================================================
 
@@ -400,6 +444,21 @@ setInterval(
 
   let frame = 0;
   let lastDraw = 0;
+  let radarVisible = true;
+
+  const visibilityObserver =
+    new IntersectionObserver(
+      function (entries) {
+        radarVisible =
+          entries[0] &&
+          entries[0].isIntersecting;
+      },
+      {
+        threshold: 0.05
+      }
+    );
+
+  visibilityObserver.observe(canvas);
 
   function resizeCanvas() {
     const rect =
@@ -408,7 +467,7 @@ setInterval(
     const density =
       Math.min(
         window.devicePixelRatio || 1,
-        2
+        1.5
       );
 
     canvas.width =
@@ -449,18 +508,7 @@ setInterval(
       .trim();
   }
 
-  function draw(timestamp) {
-    if (
-      !reducedMotion &&
-      timestamp - lastDraw < 33
-    ) {
-      requestAnimationFrame(draw);
-      return;
-    }
-
-    lastDraw =
-      timestamp;
-
+  function drawRadar() {
     const width =
       canvas.clientWidth;
 
@@ -471,10 +519,6 @@ setInterval(
       width <= 0 ||
       height <= 0
     ) {
-      if (!reducedMotion) {
-        requestAnimationFrame(draw);
-      }
-
       return;
     }
 
@@ -507,7 +551,6 @@ setInterval(
       height
     );
 
-    // Soft contour lines.
     context.globalAlpha =
       0.12;
 
@@ -527,13 +570,13 @@ setInterval(
       for (
         let x = 0;
         x <= width;
-        x += 8
+        x += 10
       ) {
         const waveY =
           y +
           Math.sin(
             x * 0.018 +
-            frame * 0.01 +
+            frame * 0.006 +
             y
           ) *
           8;
@@ -568,7 +611,6 @@ setInterval(
       ) *
       0.39;
 
-    // Radar rings.
     context.globalAlpha =
       0.24;
 
@@ -596,13 +638,12 @@ setInterval(
       context.stroke();
     }
 
-    // Sweep wedge.
     const angle =
       frame *
-      0.0038;
+      0.0023;
 
     context.globalAlpha =
-      0.19;
+      0.18;
 
     context.fillStyle =
       orange;
@@ -629,29 +670,50 @@ setInterval(
       1;
 
     frame += 1;
+  }
+
+  function animate(timestamp) {
+    const canPaint =
+      radarVisible &&
+      !pageIsScrolling &&
+      !document.hidden;
+
+    // 12 fps is plenty for the atmospheric effect and avoids
+    // forcing unrelated text to repaint at 30-60 fps.
+    if (
+      canPaint &&
+      timestamp - lastDraw >= 83
+    ) {
+      lastDraw =
+        timestamp;
+
+      drawRadar();
+    }
 
     if (!reducedMotion) {
-      requestAnimationFrame(draw);
+      requestAnimationFrame(
+        animate
+      );
     }
   }
 
   resizeCanvas();
+  drawRadar();
 
-  if (reducedMotion) {
-    draw(0);
-  }
-  else {
-    requestAnimationFrame(draw);
+  if (!reducedMotion) {
+    requestAnimationFrame(
+      animate
+    );
   }
 
   window.addEventListener(
     "resize",
     function () {
       resizeCanvas();
-
-      if (reducedMotion) {
-        draw(0);
-      }
+      drawRadar();
+    },
+    {
+      passive: true
     }
   );
 
@@ -659,16 +721,11 @@ setInterval(
     "(prefers-color-scheme: dark)"
   ).addEventListener(
     "change",
-    function () {
-      if (reducedMotion) {
-        draw(0);
-      }
-    }
+    drawRadar
   );
 })();
 
 
-// ==================================================
 // TRADINGVIEW THEME SYNC
 // ==================================================
 
