@@ -2926,7 +2926,7 @@ body.modal-open {
 ================================================== */
 
 @media (max-width: 980px) {
-  .control-trigger {
+  .nav-meta > span {
     display: none;
   }
 
@@ -3003,4 +3003,9 @@ body.modal-open {
   .entrance {
     transition: none !important;
   }
+}
+
+
+.contact-social[aria-disabled="true"] {
+  pointer-events: none;
 }
