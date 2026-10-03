@@ -925,7 +925,17 @@
             activeCommandIndex =
               index;
 
-            renderCommands();
+            getAll(
+              ".command-result"
+            ).forEach(
+              (resultButton, resultIndex) => {
+                resultButton.classList.toggle(
+                  "is-selected",
+                  resultIndex ===
+                  activeCommandIndex
+                );
+              }
+            );
           }
         );
 
