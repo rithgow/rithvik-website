@@ -376,53 +376,11 @@ setInterval(
 
 // ==================================================
 // ==================================================
-// SCROLL STATE / PAINT STABILITY
+// ==================================================
+// STATIC RADAR / ATMOSPHERE CANVAS
 // ==================================================
 
-let pageIsScrolling =
-  false;
-
-let scrollStopTimer =
-  null;
-
-window.addEventListener(
-  "scroll",
-  function () {
-    pageIsScrolling =
-      true;
-
-    document.body.classList.add(
-      "is-scrolling"
-    );
-
-    clearTimeout(
-      scrollStopTimer
-    );
-
-    scrollStopTimer =
-      setTimeout(
-        function () {
-          pageIsScrolling =
-            false;
-
-          document.body.classList.remove(
-            "is-scrolling"
-          );
-        },
-        140
-      );
-  },
-  {
-    passive: true
-  }
-);
-
-
-// ==================================================
-// RADAR / ATMOSPHERE CANVAS
-// ==================================================
-
-(function startRadar() {
+(function drawStaticRadar() {
   const canvas =
     getElement("#sky");
 
@@ -436,29 +394,6 @@ window.addEventListener(
   if (!context) {
     return;
   }
-
-  const reducedMotion =
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-  let frame = 0;
-  let lastDraw = 0;
-  let radarVisible = true;
-
-  const visibilityObserver =
-    new IntersectionObserver(
-      function (entries) {
-        radarVisible =
-          entries[0] &&
-          entries[0].isIntersecting;
-      },
-      {
-        threshold: 0.05
-      }
-    );
-
-  visibilityObserver.observe(canvas);
 
   function resizeCanvas() {
     const rect =
@@ -508,7 +443,7 @@ window.addEventListener(
       .trim();
   }
 
-  function drawRadar() {
+  function draw() {
     const width =
       canvas.clientWidth;
 
@@ -576,7 +511,6 @@ window.addEventListener(
           y +
           Math.sin(
             x * 0.018 +
-            frame * 0.006 +
             y
           ) *
           8;
@@ -638,10 +572,6 @@ window.addEventListener(
       context.stroke();
     }
 
-    const angle =
-      frame *
-      0.0023;
-
     context.globalAlpha =
       0.18;
 
@@ -659,8 +589,8 @@ window.addEventListener(
       centerX,
       centerY,
       radius,
-      angle,
-      angle + 0.46
+      -0.75,
+      -0.29
     );
 
     context.closePath();
@@ -668,49 +598,28 @@ window.addEventListener(
 
     context.globalAlpha =
       1;
-
-    frame += 1;
-  }
-
-  function animate(timestamp) {
-    const canPaint =
-      radarVisible &&
-      !pageIsScrolling &&
-      !document.hidden;
-
-    // 12 fps is plenty for the atmospheric effect and avoids
-    // forcing unrelated text to repaint at 30-60 fps.
-    if (
-      canPaint &&
-      timestamp - lastDraw >= 83
-    ) {
-      lastDraw =
-        timestamp;
-
-      drawRadar();
-    }
-
-    if (!reducedMotion) {
-      requestAnimationFrame(
-        animate
-      );
-    }
   }
 
   resizeCanvas();
-  drawRadar();
+  draw();
 
-  if (!reducedMotion) {
-    requestAnimationFrame(
-      animate
-    );
-  }
+  let resizeTimer = null;
 
   window.addEventListener(
     "resize",
     function () {
-      resizeCanvas();
-      drawRadar();
+      clearTimeout(
+        resizeTimer
+      );
+
+      resizeTimer =
+        setTimeout(
+          function () {
+            resizeCanvas();
+            draw();
+          },
+          120
+        );
     },
     {
       passive: true
@@ -721,7 +630,7 @@ window.addEventListener(
     "(prefers-color-scheme: dark)"
   ).addEventListener(
     "change",
-    drawRadar
+    draw
   );
 })();
 
@@ -763,24 +672,3 @@ window.matchMedia(
 
 
 // ==================================================
-// TICKER PAUSE WHEN TAB IS HIDDEN
-// ==================================================
-
-document.addEventListener(
-  "visibilitychange",
-  function () {
-    const track =
-      getElement(
-        ".ticker-track"
-      );
-
-    if (!track) {
-      return;
-    }
-
-    track.style.animationPlayState =
-      document.hidden
-        ? "paused"
-        : "running";
-  }
-);
