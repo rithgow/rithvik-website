@@ -1,0 +1,1758 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Personal website of Rithvik Gowda — weather, markets, Roblox wraps, stripes, design systems, and business ideas."
+  >
+
+  <title>
+    Rithvik Gowda / Control Center
+  </title>
+
+
+  <!-- OUR CSS -->
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+
+  <!-- TRADINGVIEW -->
+
+  <script
+    type="module"
+    src="https://widgets.tradingview-widget.com/w/en/tv-tickers.js"
+  ></script>
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================================
+       WEATHER VISUAL EFFECT LAYER
+  =================================================== -->
+
+  <div
+    class="weather-fx"
+    aria-hidden="true"
+  ></div>
+
+
+
+  <!-- ==================================================
+       TOP NAVIGATION
+  =================================================== -->
+
+  <header class="topbar">
+
+
+    <a
+      href="#home"
+      class="logo"
+    >
+      RG/
+    </a>
+
+
+    <nav class="desktop-nav">
+
+      <a href="#about">
+        ABOUT
+      </a>
+
+      <a href="#projects">
+        PROJECTS
+      </a>
+
+      <a href="#experience">
+        EXPERIENCE
+      </a>
+
+      <a href="#contact">
+        CONTACT
+      </a>
+
+    </nav>
+
+
+    <div class="top-status">
+
+
+      <span class="location-label">
+        STARKVILLE, MS
+      </span>
+
+
+      <span id="clock">
+        --:--
+      </span>
+
+
+      <button
+        id="command-button"
+        class="command-button"
+        type="button"
+      >
+        CTRL K
+      </button>
+
+
+      <span class="online-status">
+        ● ONLINE
+      </span>
+
+
+    </div>
+
+
+  </header>
+
+
+
+  <!-- ==================================================
+       MAIN WEBSITE
+  =================================================== -->
+
+  <main>
+
+
+
+    <!-- ==================================================
+         HOME / CONTROL CENTER
+    =================================================== -->
+
+    <section
+      id="home"
+      class="control-center"
+    >
+
+
+      <!-- ================================================
+           HERO
+      ================================================= -->
+
+      <article class="hero panel">
+
+
+        <div class="panel-label">
+
+          <span>
+            PROFILE / 001
+          </span>
+
+          <span>
+            MISSISSIPPI
+          </span>
+
+        </div>
+
+
+
+        <div class="hero-content">
+
+
+          <p class="eyebrow">
+            FINANCE / METEOROLOGY / DESIGNER
+          </p>
+
+
+          <h1>
+
+            RITHVIK
+
+            <br>
+
+            GOWDA
+
+          </h1>
+
+
+          <p class="hero-description">
+
+            Student, builder, designer, and entrepreneur
+            interested in weather, markets, technology,
+            Roblox vehicle customization, and business ideas.
+
+          </p>
+
+
+          <div class="hero-actions">
+
+
+            <a
+              href="#projects"
+              class="primary-button"
+            >
+
+              EXPLORE MY WORK
+
+              <span>
+                →
+              </span>
+
+            </a>
+
+
+            <button
+              id="hero-command-button"
+              class="secondary-button"
+              type="button"
+            >
+              OPEN COMMAND CENTER
+            </button>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <div class="hero-footer">
+
+          <span>
+            MISSISSIPPI STATE
+          </span>
+
+          <span>
+            EST. PROFILE 2026
+          </span>
+
+        </div>
+
+
+      </article>
+
+
+
+      <!-- ==================================================
+           RIGHT-SIDE DASHBOARD STACK
+
+           Important:
+           Weather, TradingView, and Wraps are isolated from
+           the Hero so widget resizing cannot move my name.
+      =================================================== -->
+
+      <div class="dashboard-stack">
+
+
+
+        <!-- ================================================
+             WEATHER
+        ================================================= -->
+
+        <article class="weather panel">
+
+
+          <div class="panel-label">
+
+            <span>
+              WEATHER
+            </span>
+
+            <span class="live-indicator">
+              ● LIVE
+            </span>
+
+          </div>
+
+
+
+          <div class="weather-primary">
+
+
+            <div class="temperature">
+
+              <span id="temperature">
+                --
+              </span>°
+
+            </div>
+
+
+            <div class="weather-main-info">
+
+              <strong id="weather-description">
+                LOADING
+              </strong>
+
+              <span id="day-status">
+                --
+              </span>
+
+            </div>
+
+
+          </div>
+
+
+
+          <div class="weather-details">
+
+
+            <div class="data-row">
+
+              <span>
+                FEELS LIKE
+              </span>
+
+              <strong id="feels-like">
+                --°
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                HUMIDITY
+              </span>
+
+              <strong id="humidity">
+                --%
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                DEW POINT
+              </span>
+
+              <strong id="dew-point">
+                --°
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                CLOUD COVER
+              </span>
+
+              <strong id="cloud-cover">
+                --%
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                VISIBILITY
+              </span>
+
+              <strong id="visibility">
+                -- mi
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                WIND
+              </span>
+
+              <strong id="wind">
+                -- mph
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                WIND DIR
+              </span>
+
+
+              <strong class="wind-direction">
+
+
+                <span
+                  id="wind-arrow"
+                  class="wind-arrow"
+                >
+                  ↑
+                </span>
+
+
+                <span id="wind-direction">
+                  --
+                </span>
+
+
+              </strong>
+
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                GUST
+              </span>
+
+              <strong id="gust">
+                -- mph
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                PRESSURE
+              </span>
+
+              <strong id="pressure">
+                -- hPa
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                SUNRISE
+              </span>
+
+              <strong id="sunrise">
+                --:--
+              </strong>
+
+            </div>
+
+
+            <div class="data-row">
+
+              <span>
+                SUNSET
+              </span>
+
+              <strong id="sunset">
+                --:--
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+
+          <div class="panel-footer">
+
+            <span>
+              STARKVILLE, MISSISSIPPI
+            </span>
+
+            <span id="weather-updated">
+              WAITING FOR DATA
+            </span>
+
+          </div>
+
+
+        </article>
+
+
+
+        <!-- ================================================
+             MARKETS
+        ================================================= -->
+
+        <article class="markets panel">
+
+
+          <div class="panel-label">
+
+            <span>
+              MARKET DESK
+            </span>
+
+            <span class="market-live">
+              LIVE
+            </span>
+
+          </div>
+
+
+
+          <div class="market-intro">
+
+            <strong>
+              MARKET PULSE
+            </strong>
+
+            <span>
+              US / CRYPTO
+            </span>
+
+          </div>
+
+
+
+          <div class="tradingview-shell">
+
+
+            <tv-tickers
+              symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD"
+              direction="vertical"
+              hide-chart
+              transparent
+              theme="dark"
+            >
+
+              <div class="market-placeholder">
+                Loading market data...
+              </div>
+
+            </tv-tickers>
+
+
+          </div>
+
+
+
+          <div class="panel-footer">
+
+            <span>
+              MARKET DATA
+            </span>
+
+            <span>
+              TRADINGVIEW
+            </span>
+
+          </div>
+
+
+        </article>
+
+
+
+        <!-- ================================================
+             CURRENT FOCUS
+        ================================================= -->
+
+        <article class="current-focus panel">
+
+
+          <div class="panel-label">
+
+            <span>
+              CURRENT FOCUS
+            </span>
+
+            <span>
+              DESIGN / 001
+            </span>
+
+          </div>
+
+
+
+          <div class="focus-feature">
+
+
+            <p class="focus-type">
+              ROBLOX CUSTOMIZATION
+            </p>
+
+
+            <h2>
+              WRAPS &amp; STRIPES
+            </h2>
+
+
+            <p>
+
+              Wrap design, stripe systems, fades,
+              decal effects, color variations,
+              layout fitting, and clean in-game visuals.
+
+            </p>
+
+
+          </div>
+
+
+
+          <a
+            href="#projects"
+            class="text-link"
+          >
+            VIEW DESIGN LAB →
+          </a>
+
+
+        </article>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         ABOUT
+    =================================================== -->
+
+    <section
+      id="about"
+      class="page-section"
+    >
+
+
+      <div class="section-number">
+        01
+      </div>
+
+
+
+      <div class="section-content">
+
+
+        <p class="section-kicker">
+          ABOUT
+        </p>
+
+
+        <h2 class="section-title">
+
+          I LIKE THINGS THAT
+
+          <br>
+
+          <span>
+            MOVE, CHANGE &amp; GROW.
+          </span>
+
+        </h2>
+
+
+
+        <div class="about-grid">
+
+
+
+          <div class="about-copy">
+
+
+            <p>
+
+              I’m interested in subjects that are always
+              changing: weather systems, financial markets,
+              design systems, technology, and business.
+
+            </p>
+
+
+            <p>
+
+              A lot of my creative work centers around
+              Roblox customization design — especially
+              wraps, stripes, fitting graphics to vehicles,
+              and experimenting with effects.
+
+            </p>
+
+
+            <p>
+
+              This website is built more like a personal
+              control center than a traditional portfolio.
+
+            </p>
+
+
+          </div>
+
+
+
+          <div class="interest-grid">
+
+
+            <div class="interest-card">
+
+              <span>
+                01
+              </span>
+
+              <strong>
+                METEOROLOGY
+              </strong>
+
+              <p>
+                Weather, forecasting, atmospheric data.
+              </p>
+
+            </div>
+
+
+
+            <div class="interest-card">
+
+              <span>
+                02
+              </span>
+
+              <strong>
+                FINANCE
+              </strong>
+
+              <p>
+                Markets, business, economics, investing.
+              </p>
+
+            </div>
+
+
+
+            <div class="interest-card">
+
+              <span>
+                03
+              </span>
+
+              <strong>
+                WRAPS &amp; STRIPES
+              </strong>
+
+              <p>
+                Vehicle liveries, decals, fit, fades, clean visuals.
+              </p>
+
+            </div>
+
+
+
+            <div class="interest-card">
+
+              <span>
+                04
+              </span>
+
+              <strong>
+                ENTREPRENEURSHIP
+              </strong>
+
+              <p>
+                Turning ideas into actual projects and businesses.
+              </p>
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         PROJECTS
+    =================================================== -->
+
+    <section
+      id="projects"
+      class="page-section"
+    >
+
+
+      <div class="section-number">
+        02
+      </div>
+
+
+
+      <div class="section-content">
+
+
+        <p class="section-kicker">
+          PROJECTS / LAB
+        </p>
+
+
+        <h2 class="section-title">
+
+          THINGS I'M
+
+          <span>
+            BUILDING.
+          </span>
+
+        </h2>
+
+
+
+        <div class="projects-grid">
+
+
+
+          <!-- WRAPS -->
+
+          <article class="project-card project-card-large">
+
+
+            <div class="project-card-top">
+
+              <span>
+                01 / DESIGN
+              </span>
+
+              <span class="project-status">
+                ACTIVE
+              </span>
+
+            </div>
+
+
+
+            <div class="project-visual wraps-visual">
+
+
+              <div class="stripe stripe-one"></div>
+
+              <div class="stripe stripe-two"></div>
+
+              <div class="stripe stripe-three"></div>
+
+
+              <div class="wraps-title">
+                WRAPS
+              </div>
+
+
+            </div>
+
+
+
+            <div class="project-card-content">
+
+
+              <h3>
+                WRAPS &amp; STRIPES LAB
+              </h3>
+
+
+              <p>
+
+                Designing reusable Roblox vehicle wraps,
+                stripe layouts, fades, clean seam handling,
+                fitting graphics correctly, and building
+                effects that look good in-game.
+
+              </p>
+
+
+              <div class="project-tags">
+
+                <span>
+                  ROBLOX
+                </span>
+
+                <span>
+                  WRAPS
+                </span>
+
+                <span>
+                  STRIPES
+                </span>
+
+                <span>
+                  DESIGN
+                </span>
+
+                <span>
+                  DECALS
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+          </article>
+
+
+
+          <!-- WEATHER -->
+
+          <article class="project-card">
+
+
+            <div class="project-card-top">
+
+              <span>
+                02 / DATA
+              </span>
+
+              <span>
+                LIVE
+              </span>
+
+            </div>
+
+
+
+            <div class="project-visual weather-visual">
+
+
+              <div class="weather-visual-number">
+
+                <span id="project-temperature">
+                  --
+                </span>°
+
+              </div>
+
+
+              <span>
+                WX / STARKVILLE
+              </span>
+
+
+            </div>
+
+
+
+            <div class="project-card-content">
+
+
+              <h3>
+                WEATHER INTERFACE
+              </h3>
+
+
+              <p>
+
+                A live weather dashboard with meteorology-style
+                data, visual themes, atmospheric effects,
+                and weather-reactive design.
+
+              </p>
+
+
+              <div class="project-tags">
+
+                <span>
+                  JAVASCRIPT
+                </span>
+
+                <span>
+                  API
+                </span>
+
+                <span>
+                  WEATHER
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+          </article>
+
+
+
+          <!-- EFFECTS -->
+
+          <article class="project-card">
+
+
+            <div class="project-card-top">
+
+              <span>
+                03 / EFFECTS
+              </span>
+
+              <span>
+                EXPERIMENTAL
+              </span>
+
+            </div>
+
+
+
+            <div class="project-visual fx-visual">
+
+              <div class="fx-line fx-line-1"></div>
+
+              <div class="fx-line fx-line-2"></div>
+
+              <div class="fx-line fx-line-3"></div>
+
+            </div>
+
+
+
+            <div class="project-card-content">
+
+
+              <h3>
+                EFFECT PROTOTYPES
+              </h3>
+
+
+              <p>
+
+                Experimenting with fades, flashing colors,
+                rainbow effects, strobing visuals, and
+                ways to translate those ideas into clean
+                Roblox decal workflows.
+
+              </p>
+
+
+              <div class="project-tags">
+
+                <span>
+                  FX
+                </span>
+
+                <span>
+                  COLOR
+                </span>
+
+                <span>
+                  PROTOTYPING
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+          </article>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         VENTURES
+    =================================================== -->
+
+    <section
+      id="ventures"
+      class="page-section"
+    >
+
+
+      <div class="section-number">
+        03
+      </div>
+
+
+
+      <div class="section-content">
+
+
+        <p class="section-kicker">
+          VENTURES / IDEAS
+        </p>
+
+
+        <h2 class="section-title">
+
+          BUSINESS
+
+          <span>
+            EXPERIMENTS.
+          </span>
+
+        </h2>
+
+
+
+        <div class="venture-list">
+
+
+
+          <article class="venture-row">
+
+
+            <span class="venture-number">
+              01
+            </span>
+
+
+            <div>
+
+              <h3>
+                STUDENT LIVING
+              </h3>
+
+              <p>
+
+                A student-focused housing concept built around
+                better amenities, digital operations,
+                community partnerships, and resident experience.
+
+              </p>
+
+            </div>
+
+
+            <span class="venture-location">
+              STARKVILLE / MS
+            </span>
+
+
+          </article>
+
+
+
+          <article class="venture-row">
+
+
+            <span class="venture-number">
+              02
+            </span>
+
+
+            <div>
+
+              <h3>
+                COLLEGE ENTERTAINMENT
+              </h3>
+
+              <p>
+
+                Exploring affordable entertainment concepts
+                combining mini golf, gaming, batting,
+                food, and social spaces.
+
+              </p>
+
+            </div>
+
+
+            <span class="venture-location">
+              STARKVILLE / MS
+            </span>
+
+
+          </article>
+
+
+
+          <article class="venture-row">
+
+
+            <span class="venture-number">
+              03
+            </span>
+
+
+            <div>
+
+              <h3>
+                INTERACTIVE BASEBALL
+              </h3>
+
+              <p>
+
+                A lower-cost indoor batting experience using
+                pitching machines, sensors, projectors,
+                custom software, and leaderboards.
+
+              </p>
+
+            </div>
+
+
+            <span class="venture-location">
+              CONCEPT
+            </span>
+
+
+          </article>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         EXPERIENCE
+    =================================================== -->
+
+    <section
+      id="experience"
+      class="page-section"
+    >
+
+
+      <div class="section-number">
+        04
+      </div>
+
+
+
+      <div class="section-content">
+
+
+        <p class="section-kicker">
+          EXPERIENCE
+        </p>
+
+
+        <h2 class="section-title">
+
+          WHERE I'VE
+
+          <span>
+            WORKED.
+          </span>
+
+        </h2>
+
+
+
+        <div class="timeline">
+
+
+
+          <article class="timeline-row">
+
+
+            <div class="timeline-year">
+              RETAIL
+            </div>
+
+
+            <div>
+
+              <h3>
+                TARGET
+              </h3>
+
+
+              <p class="timeline-role">
+
+                Fulfillment Expert /
+                Service Advocate /
+                Checkout Advocate
+
+              </p>
+
+
+              <p>
+
+                Customer service, fulfillment, checkout,
+                store operations, and fast-paced team work.
+
+              </p>
+
+            </div>
+
+
+          </article>
+
+
+
+          <article class="timeline-row">
+
+
+            <div class="timeline-year">
+              2023–2025
+            </div>
+
+
+            <div>
+
+              <h3>
+                ONEBLOOD
+              </h3>
+
+
+              <p class="timeline-role">
+                Assistant / Volunteer
+              </p>
+
+
+              <p>
+
+                Supported donation sessions, inventory,
+                donor education, setup, and post-donation assistance.
+
+              </p>
+
+            </div>
+
+
+          </article>
+
+
+
+          <article class="timeline-row">
+
+
+            <div class="timeline-year">
+              2023
+            </div>
+
+
+            <div>
+
+              <h3>
+                SUMMER CAMP COUNSELOR
+              </h3>
+
+
+              <p class="timeline-role">
+                Spanish Trail Scout Reservation
+              </p>
+
+
+              <p>
+
+                Led activities, coached campers, supported
+                merit-badge work, and facilitated team-building.
+
+              </p>
+
+            </div>
+
+
+          </article>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         CURRENT STATUS
+    =================================================== -->
+
+    <section
+      id="now"
+      class="now-section"
+    >
+
+
+      <div class="now-label">
+        CURRENT STATUS
+      </div>
+
+
+      <div class="now-marquee">
+
+
+        <div class="marquee-track">
+
+          <span>
+            BUILDING WRAPS
+          </span>
+
+          <span>
+            •
+          </span>
+
+          <span>
+            LEARNING WEB DEVELOPMENT
+          </span>
+
+          <span>
+            •
+          </span>
+
+          <span>
+            STUDYING WEATHER
+          </span>
+
+          <span>
+            •
+          </span>
+
+          <span>
+            WATCHING MARKETS
+          </span>
+
+          <span>
+            •
+          </span>
+
+          <span>
+            EXPLORING BUSINESS IDEAS
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         CONTACT
+    =================================================== -->
+
+    <section
+      id="contact"
+      class="contact-section"
+    >
+
+
+      <p class="section-kicker">
+        CONTACT / 05
+      </p>
+
+
+      <h2>
+
+        LET'S BUILD
+
+        <br>
+
+        <span>
+          SOMETHING.
+        </span>
+
+      </h2>
+
+
+      <p>
+
+        Weather, markets, design, Roblox customization,
+        technology, or something completely new.
+
+      </p>
+
+
+      <a
+        href="mailto:rithvikgowda432@gmail.com"
+        class="contact-button"
+      >
+        SEND ME AN EMAIL →
+      </a>
+
+
+      <div class="contact-footer">
+
+        <span>
+          RITHVIK GOWDA
+        </span>
+
+        <span id="footer-year">
+          2026
+        </span>
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- ==================================================
+       COMMAND CENTER
+  =================================================== -->
+
+  <div
+    id="command-overlay"
+    class="command-overlay"
+    aria-hidden="true"
+  >
+
+
+    <div
+      class="command-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Website command center"
+    >
+
+
+      <div class="command-search-row">
+
+
+        <span>
+          &gt;
+        </span>
+
+
+        <input
+          id="command-search"
+          type="text"
+          placeholder="Search Rithvik OS..."
+          autocomplete="off"
+        >
+
+
+        <kbd>
+          ESC
+        </kbd>
+
+
+      </div>
+
+
+
+      <div
+        id="command-results"
+        class="command-results"
+      >
+
+
+        <button
+          class="command-item"
+          data-target="#home"
+          data-search="home control center profile"
+        >
+
+          <span class="command-icon">
+            01
+          </span>
+
+          <span>
+            Home / Control Center
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-target="#about"
+          data-search="about rithvik profile"
+        >
+
+          <span class="command-icon">
+            02
+          </span>
+
+          <span>
+            About Me
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-target="#projects"
+          data-search="projects wraps stripes decals effects roblox"
+        >
+
+          <span class="command-icon">
+            03
+          </span>
+
+          <span>
+            Projects / Design Lab
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-target="#ventures"
+          data-search="business ventures housing entertainment"
+        >
+
+          <span class="command-icon">
+            04
+          </span>
+
+          <span>
+            Ventures
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-target="#experience"
+          data-search="experience jobs target oneblood camp"
+        >
+
+          <span class="command-icon">
+            05
+          </span>
+
+          <span>
+            Experience
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-action="weather"
+          data-search="weather meteorology current temperature"
+        >
+
+          <span class="command-icon">
+            WX
+          </span>
+
+          <span>
+            Jump to Live Weather
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="command-item"
+          data-target="#contact"
+          data-search="contact email message"
+        >
+
+          <span class="command-icon">
+            06
+          </span>
+
+          <span>
+            Contact
+          </span>
+
+          <span>
+            ↵
+          </span>
+
+        </button>
+
+
+      </div>
+
+
+
+      <div class="command-footer">
+
+        <span>
+          ↑ ↓ NAVIGATE
+        </span>
+
+        <span>
+          ENTER SELECT
+        </span>
+
+        <span>
+          ESC CLOSE
+        </span>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ==================================================
+       OUR JAVASCRIPT
+  =================================================== -->
+
+  <script src="js/main.js"></script>
+
+
+</body>
+
+</html>
