@@ -1,411 +1,700 @@
-// ==================================================
-// BASIC HELPERS
-// ==================================================
+(() => {
+  "use strict";
 
-function getElement(selector) {
-  return document.querySelector(selector);
-}
+  const get = (selector) =>
+    document.querySelector(selector);
 
-function setText(selector, value) {
-  const element = getElement(selector);
+  function setText(selector, value) {
+    const element =
+      get(selector);
 
-  if (element) {
-    element.textContent = value;
-  }
-}
-
-
-// ==================================================
-// CLOCK
-// ==================================================
-
-function updateClock() {
-  const now = new Date();
-
-  const formatted = new Intl.DateTimeFormat(
-    "en-US",
-    {
-      timeZone: "America/Chicago",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-      timeZoneName: "short"
+    if (element) {
+      element.textContent =
+        value;
     }
-  ).format(now);
-
-  setText("#central-time", formatted);
-}
-
-updateClock();
-setInterval(updateClock, 30000);
-
-
-// ==================================================
-// WEATHER CONFIG
-// ==================================================
-
-const latitude = 33.45;
-const longitude = -88.82;
-const weatherRefreshMinutes = 10;
-
-
-// ==================================================
-// WEATHER DESCRIPTION
-// ==================================================
-
-function getWeatherDescription(code) {
-  if (code === 0) return "CLEAR";
-  if (code === 1) return "MAINLY CLEAR";
-  if (code === 2) return "PARTLY CLOUDY";
-  if (code === 3) return "OVERCAST";
-
-  if (code === 45 || code === 48) {
-    return "FOG";
   }
 
-  if (code >= 51 && code <= 57) {
-    return "DRIZZLE";
-  }
 
-  if (code >= 61 && code <= 67) {
-    return "RAIN";
-  }
+  // ==================================================
+  // CLOCK
+  // ==================================================
 
-  if (code >= 71 && code <= 77) {
-    return "SNOW";
-  }
-
-  if (code >= 80 && code <= 82) {
-    return "RAIN SHOWERS";
-  }
-
-  if (code === 85 || code === 86) {
-    return "SNOW SHOWERS";
-  }
-
-  if (code === 95) {
-    return "THUNDERSTORM";
-  }
-
-  if (code === 96 || code === 99) {
-    return "SEVERE THUNDERSTORM";
-  }
-
-  return "VARIABLE";
-}
-
-
-// ==================================================
-// WEATHER CATEGORY
-// ==================================================
-
-function getWeatherCategory(code) {
-  if (code === 0 || code === 1) {
-    return "clear";
-  }
-
-  if (
-    code === 2 ||
-    code === 3 ||
-    code === 45 ||
-    code === 48
-  ) {
-    return "cloudy";
-  }
-
-  if (
-    (code >= 51 && code <= 67) ||
-    (code >= 80 && code <= 82)
-  ) {
-    return "rain";
-  }
-
-  if (
-    (code >= 71 && code <= 77) ||
-    code === 85 ||
-    code === 86
-  ) {
-    return "snow";
-  }
-
-  if (code >= 95) {
-    return "storm";
-  }
-
-  return "cloudy";
-}
-
-
-// ==================================================
-// WIND DIRECTION
-// ==================================================
-
-function getWindDirection(degrees) {
-  const directions = [
-    "N",
-    "NE",
-    "E",
-    "SE",
-    "S",
-    "SW",
-    "W",
-    "NW"
-  ];
-
-  const index =
-    Math.round(degrees / 45) % 8;
-
-  return directions[index];
-}
-
-
-// ==================================================
-// TIME FORMATTER
-// ==================================================
-
-function formatWeatherTime(dateString) {
-  const date = new Date(dateString);
-
-  return date.toLocaleTimeString(
-    [],
-    {
-      hour: "numeric",
-      minute: "2-digit"
-    }
-  );
-}
-
-
-// ==================================================
-// LIVE WEATHER
-// ==================================================
-
-async function getWeather() {
-  try {
-    const weatherURL =
-      "https://api.open-meteo.com/v1/forecast" +
-      "?latitude=" + latitude +
-      "&longitude=" + longitude +
-      "&current=temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure" +
-      "&daily=sunrise,sunset" +
-      "&temperature_unit=fahrenheit" +
-      "&wind_speed_unit=mph" +
-      "&timezone=America%2FChicago";
-
-    const response =
-      await fetch(weatherURL);
-
-    if (!response.ok) {
-      throw new Error(
-        "Weather request failed: " +
-        response.status
-      );
-    }
-
-    const data =
-      await response.json();
-
-    const weather =
-      data.current;
-
-    const temperature =
-      Math.round(weather.temperature_2m);
-
-    const description =
-      getWeatherDescription(
-        weather.weather_code
-      );
-
-    setText(
-      "#temperature",
-      temperature
-    );
-
-    setText(
-      "#station-temperature",
-      temperature
-    );
-
-    setText(
-      "#weather-description",
-      description
-    );
-
-    setText(
-      "#station-condition",
-      description
-    );
-
-    setText(
-      "#feels-like",
-      Math.round(
-        weather.apparent_temperature
-      ) + "°"
-    );
-
-    setText(
-      "#humidity",
-      weather.relative_humidity_2m + "%"
-    );
-
-    setText(
-      "#dew-point",
-      Math.round(
-        weather.dew_point_2m
-      ) + "°"
-    );
-
-    setText(
-      "#cloud-cover",
-      weather.cloud_cover + "%"
-    );
-
-    setText(
-      "#wind",
-      Math.round(
-        weather.wind_speed_10m
-      ) + " mph"
-    );
-
-    setText(
-      "#gust",
-      Math.round(
-        weather.wind_gusts_10m
-      ) + " mph"
-    );
-
-    setText(
-      "#pressure",
-      Math.round(
-        weather.surface_pressure
-      ) + " hPa"
-    );
-
-    const visibilityMiles =
-      weather.visibility /
-      1609.344;
-
-    setText(
-      "#visibility",
-      visibilityMiles.toFixed(1) +
-      " mi"
-    );
-
-    setText(
-      "#wind-direction",
-      getWindDirection(
-        weather.wind_direction_10m
-      )
-    );
-
-    if (
-      data.daily &&
-      data.daily.sunrise &&
-      data.daily.sunset
-    ) {
-      setText(
-        "#sunrise",
-        formatWeatherTime(
-          data.daily.sunrise[0]
-        )
-      );
-
-      setText(
-        "#sunset",
-        formatWeatherTime(
-          data.daily.sunset[0]
-        )
-      );
-    }
-
-    const updatedTime =
+  function updateClock() {
+    const formatted =
       new Intl.DateTimeFormat(
         "en-US",
         {
           timeZone: "America/Chicago",
           hour: "numeric",
           minute: "2-digit",
-          hour12: true
+          hour12: true,
+          timeZoneName: "short"
         }
-      ).format(new Date());
-
-    setText(
-      "#weather-updated",
-      "UPDATED " +
-      updatedTime
-    );
-
-    document.body.dataset.weather =
-      getWeatherCategory(
-        weather.weather_code
+      ).format(
+        new Date()
       );
+
+    setText(
+      "#central-time",
+      formatted
+    );
   }
 
+  updateClock();
+
+  setInterval(
+    updateClock,
+    30000
+  );
+
+
+  // ==================================================
+  // WEATHER
+  // ==================================================
+
+  const fallbackLocation = {
+    latitude: 33.45,
+    longitude: -88.82,
+    label: "STARKVILLE",
+    source: "fallback"
+  };
+
+  let activeLocation = {
+    ...fallbackLocation
+  };
+
+  const weatherRefreshMinutes =
+    10;
+
+  function getWeatherDescription(code) {
+    if (code === 0) return "CLEAR";
+    if (code === 1) return "MAINLY CLEAR";
+    if (code === 2) return "PARTLY CLOUDY";
+    if (code === 3) return "OVERCAST";
+
+    if (
+      code === 45 ||
+      code === 48
+    ) {
+      return "FOG";
+    }
+
+    if (
+      code >= 51 &&
+      code <= 57
+    ) {
+      return "DRIZZLE";
+    }
+
+    if (
+      code >= 61 &&
+      code <= 67
+    ) {
+      return "RAIN";
+    }
+
+    if (
+      code >= 71 &&
+      code <= 77
+    ) {
+      return "SNOW";
+    }
+
+    if (
+      code >= 80 &&
+      code <= 82
+    ) {
+      return "RAIN SHOWERS";
+    }
+
+    if (
+      code === 85 ||
+      code === 86
+    ) {
+      return "SNOW SHOWERS";
+    }
+
+    if (code === 95) {
+      return "THUNDERSTORM";
+    }
+
+    if (
+      code === 96 ||
+      code === 99
+    ) {
+      return "SEVERE THUNDERSTORM";
+    }
+
+    return "VARIABLE";
+  }
+
+  function getWeatherCategory(code) {
+    if (
+      code === 0 ||
+      code === 1
+    ) {
+      return "clear";
+    }
+
+    if (
+      code === 2 ||
+      code === 3 ||
+      code === 45 ||
+      code === 48
+    ) {
+      return "cloudy";
+    }
+
+    if (
+      (
+        code >= 51 &&
+        code <= 67
+      ) ||
+      (
+        code >= 80 &&
+        code <= 82
+      )
+    ) {
+      return "rain";
+    }
+
+    if (
+      (
+        code >= 71 &&
+        code <= 77
+      ) ||
+      code === 85 ||
+      code === 86
+    ) {
+      return "snow";
+    }
+
+    if (code >= 95) {
+      return "storm";
+    }
+
+    return "cloudy";
+  }
+
+  function getWindDirection(degrees) {
+    const directions = [
+      "N",
+      "NE",
+      "E",
+      "SE",
+      "S",
+      "SW",
+      "W",
+      "NW"
+    ];
+
+    return directions[
+      Math.round(
+        degrees / 45
+      ) % 8
+    ];
+  }
+
+  function formatWeatherTime(
+    dateString
+  ) {
+    const date =
+      new Date(
+        dateString
+      );
+
+    return date.toLocaleTimeString(
+      [],
+      {
+        hour: "numeric",
+        minute: "2-digit"
+      }
+    );
+  }
+
+  function coordinateLabel(
+    latitude,
+    longitude
+  ) {
+    const latDirection =
+      latitude >= 0
+        ? "N"
+        : "S";
+
+    const lonDirection =
+      longitude >= 0
+        ? "E"
+        : "W";
+
+    return (
+      Math.abs(latitude)
+        .toFixed(2) +
+      "°" +
+      latDirection +
+      " / " +
+      Math.abs(longitude)
+        .toFixed(2) +
+      "°" +
+      lonDirection
+    );
+  }
+
+  function updateLocationLabels() {
+    setText(
+      "#weather-location",
+      "WX / " +
+      activeLocation.label
+    );
+
+    setText(
+      "#weather-coordinates",
+      coordinateLabel(
+        activeLocation.latitude,
+        activeLocation.longitude
+      )
+    );
+  }
+
+  async function getWeather() {
+    updateLocationLabels();
+
+    try {
+      const params =
+        new URLSearchParams({
+          latitude:
+            activeLocation.latitude,
+          longitude:
+            activeLocation.longitude,
+          current:
+            "temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure",
+          daily:
+            "sunrise,sunset",
+          temperature_unit:
+            "fahrenheit",
+          wind_speed_unit:
+            "mph",
+          timezone:
+            "auto"
+        });
+
+      const response =
+        await fetch(
+          "https://api.open-meteo.com/v1/forecast?" +
+          params.toString(),
+          {
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "Weather request failed: " +
+          response.status
+        );
+      }
+
+      const data =
+        await response.json();
+
+      const weather =
+        data.current;
+
+      const temperature =
+        Math.round(
+          weather.temperature_2m
+        );
+
+      const description =
+        getWeatherDescription(
+          weather.weather_code
+        );
+
+      setText(
+        "#temperature",
+        temperature
+      );
+
+      setText(
+        "#station-temperature",
+        temperature
+      );
+
+      setText(
+        "#weather-description",
+        description
+      );
+
+      setText(
+        "#station-condition",
+        description
+      );
+
+      setText(
+        "#feels-like",
+        Math.round(
+          weather.apparent_temperature
+        ) + "°"
+      );
+
+      setText(
+        "#humidity",
+        weather.relative_humidity_2m +
+        "%"
+      );
+
+      setText(
+        "#dew-point",
+        Math.round(
+          weather.dew_point_2m
+        ) + "°"
+      );
+
+      setText(
+        "#cloud-cover",
+        weather.cloud_cover +
+        "%"
+      );
+
+      setText(
+        "#wind",
+        Math.round(
+          weather.wind_speed_10m
+        ) + " mph"
+      );
+
+      setText(
+        "#gust",
+        Math.round(
+          weather.wind_gusts_10m
+        ) + " mph"
+      );
+
+      setText(
+        "#pressure",
+        Math.round(
+          weather.surface_pressure
+        ) + " hPa"
+      );
+
+      setText(
+        "#visibility",
+        (
+          weather.visibility /
+          1609.344
+        ).toFixed(1) +
+        " mi"
+      );
+
+      setText(
+        "#wind-direction",
+        getWindDirection(
+          weather.wind_direction_10m
+        )
+      );
+
+      if (
+        data.daily?.sunrise?.[0]
+      ) {
+        setText(
+          "#sunrise",
+          formatWeatherTime(
+            data.daily.sunrise[0]
+          )
+        );
+      }
+
+      if (
+        data.daily?.sunset?.[0]
+      ) {
+        setText(
+          "#sunset",
+          formatWeatherTime(
+            data.daily.sunset[0]
+          )
+        );
+      }
+
+      let updatedTime =
+        new Date()
+          .toLocaleTimeString(
+            [],
+            {
+              hour: "numeric",
+              minute: "2-digit"
+            }
+          );
+
+      if (data.timezone) {
+        try {
+          updatedTime =
+            new Intl.DateTimeFormat(
+              "en-US",
+              {
+                timeZone:
+                  data.timezone,
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+              }
+            ).format(
+              new Date()
+            );
+        }
+        catch (error) {
+          // Browser-local time is a fine fallback.
+        }
+      }
+
+      setText(
+        "#weather-updated",
+        "UPDATED " +
+        updatedTime
+      );
+
+      document.body.dataset.weather =
+        getWeatherCategory(
+          weather.weather_code
+        );
+
+      drawRadar();
+    }
+    catch (error) {
+      console.error(
+        "Weather failed to load:",
+        error
+      );
+
+      setText(
+        "#weather-description",
+        "WEATHER UNAVAILABLE"
+      );
+
+      setText(
+        "#station-condition",
+        "CONNECTION ERROR"
+      );
+
+      setText(
+        "#weather-updated",
+        "OFFLINE"
+      );
+    }
+  }
+
+  function requestVisitorLocation() {
+    if (
+      !navigator.geolocation
+    ) {
+      return Promise.reject(
+        new Error(
+          "Geolocation unavailable"
+        )
+      );
+    }
+
+    return new Promise(
+      (resolve, reject) => {
+        navigator.geolocation
+          .getCurrentPosition(
+            (position) => {
+              resolve({
+                latitude:
+                  position.coords.latitude,
+                longitude:
+                  position.coords.longitude,
+                label:
+                  "YOUR LOCATION",
+                source:
+                  "visitor"
+              });
+            },
+            reject,
+            {
+              enableHighAccuracy:
+                false,
+              timeout:
+                8000,
+              maximumAge:
+                600000
+            }
+          );
+      }
+    );
+  }
+
+  async function useVisitorLocation(
+    announce = true
+  ) {
+    const button =
+      get(
+        "#refresh-location"
+      );
+
+    if (button) {
+      button.disabled =
+        true;
+
+      button.textContent =
+        "LOCATING…";
+    }
+
+    try {
+      activeLocation =
+        await requestVisitorLocation();
+
+      await getWeather();
+
+      if (button) {
+        button.textContent =
+          "LOCATION ACTIVE";
+      }
+    }
+    catch (error) {
+      activeLocation = {
+        ...fallbackLocation
+      };
+
+      await getWeather();
+
+      if (button) {
+        button.textContent =
+          "LOCATION UNAVAILABLE";
+      }
+
+      if (announce) {
+        document.dispatchEvent(
+          new CustomEvent(
+            "site:toast",
+            {
+              detail:
+                "USING STARKVILLE WEATHER"
+            }
+          )
+        );
+      }
+    }
+    finally {
+      window.setTimeout(
+        () => {
+          if (button) {
+            button.disabled =
+              false;
+
+            button.textContent =
+              activeLocation.source ===
+              "visitor"
+                ? "REFRESH LOCATION"
+                : "USE MY LOCATION";
+          }
+        },
+        1600
+      );
+    }
+  }
+
+  const locationButton =
+    get(
+      "#refresh-location"
+    );
+
+  if (locationButton) {
+    locationButton.addEventListener(
+      "click",
+      () => {
+        useVisitorLocation(
+          true
+        );
+      }
+    );
+  }
+
+  document.addEventListener(
+    "site:entered",
+    () => {
+      if (
+        activeLocation.source !==
+        "visitor"
+      ) {
+        useVisitorLocation(
+          false
+        );
+      }
+    }
+  );
+
+  getWeather();
+
+  setInterval(
+    getWeather,
+    weatherRefreshMinutes *
+    60 *
+    1000
+  );
+
+  try {
+    if (
+      sessionStorage.getItem(
+        "rg-entered"
+      ) === "1"
+    ) {
+      useVisitorLocation(
+        false
+      );
+    }
+  }
   catch (error) {
-    console.error(
-      "Weather failed to load:",
-      error
-    );
-
-    setText(
-      "#weather-description",
-      "WEATHER UNAVAILABLE"
-    );
-
-    setText(
-      "#station-condition",
-      "CONNECTION ERROR"
-    );
-
-    setText(
-      "#weather-updated",
-      "OFFLINE"
-    );
-  }
-}
-
-getWeather();
-
-setInterval(
-  getWeather,
-  weatherRefreshMinutes *
-  60 *
-  1000
-);
-
-
-// ==================================================
-// ==================================================
-// ==================================================
-// STATIC RADAR / ATMOSPHERE CANVAS
-// ==================================================
-
-(function drawStaticRadar() {
-  const canvas =
-    getElement("#sky");
-
-  if (!canvas) {
-    return;
+    // No-op.
   }
 
-  const context =
-    canvas.getContext("2d");
 
-  if (!context) {
-    return;
+  // ==================================================
+  // STATIC RADAR
+  // ==================================================
+
+  const radarCanvas =
+    get("#sky");
+
+  let radarContext =
+    radarCanvas
+      ? radarCanvas.getContext(
+          "2d"
+        )
+      : null;
+
+  function readColor(
+    variableName,
+    element =
+      document.documentElement
+  ) {
+    return getComputedStyle(
+      element
+    )
+      .getPropertyValue(
+        variableName
+      )
+      .trim();
   }
 
-  function resizeCanvas() {
+  function resizeRadar() {
+    if (
+      !radarCanvas ||
+      !radarContext
+    ) {
+      return;
+    }
+
     const rect =
-      canvas.getBoundingClientRect();
+      radarCanvas
+        .getBoundingClientRect();
 
     const density =
       Math.min(
-        window.devicePixelRatio || 1,
+        window.devicePixelRatio ||
+        1,
         1.5
       );
 
-    canvas.width =
+    radarCanvas.width =
       Math.max(
         1,
         Math.floor(
@@ -414,7 +703,7 @@ setInterval(
         )
       );
 
-    canvas.height =
+    radarCanvas.height =
       Math.max(
         1,
         Math.floor(
@@ -423,7 +712,7 @@ setInterval(
         )
       );
 
-    context.setTransform(
+    radarContext.setTransform(
       density,
       0,
       0,
@@ -433,22 +722,19 @@ setInterval(
     );
   }
 
-  function readColor(variableName) {
-    return getComputedStyle(
-      document.documentElement
-    )
-      .getPropertyValue(
-        variableName
-      )
-      .trim();
-  }
+  function drawRadar() {
+    if (
+      !radarCanvas ||
+      !radarContext
+    ) {
+      return;
+    }
 
-  function draw() {
     const width =
-      canvas.clientWidth;
+      radarCanvas.clientWidth;
 
     const height =
-      canvas.clientHeight;
+      radarCanvas.clientHeight;
 
     if (
       width <= 0 ||
@@ -457,42 +743,58 @@ setInterval(
       return;
     }
 
+    const panel =
+      get(".sky-panel") ||
+      document.documentElement;
+
     const ink =
-      readColor("--ink");
+      readColor(
+        "--ink",
+        panel
+      );
 
     const green =
-      readColor("--green");
+      readColor(
+        "--green",
+        panel
+      );
 
     const orange =
-      readColor("--orange");
+      readColor(
+        "--orange",
+        panel
+      );
 
     const sky =
-      readColor("--sky");
+      readColor(
+        "--sky",
+        panel
+      );
 
-    context.clearRect(
+    radarContext.clearRect(
       0,
       0,
       width,
       height
     );
 
-    context.fillStyle =
+    radarContext.fillStyle =
       sky;
 
-    context.fillRect(
+    radarContext.fillRect(
       0,
       0,
       width,
       height
     );
 
-    context.globalAlpha =
+    radarContext.globalAlpha =
       0.12;
 
-    context.strokeStyle =
+    radarContext.strokeStyle =
       ink;
 
-    context.lineWidth =
+    radarContext.lineWidth =
       1;
 
     for (
@@ -500,7 +802,7 @@ setInterval(
       y < height;
       y += 42
     ) {
-      context.beginPath();
+      radarContext.beginPath();
 
       for (
         let x = 0;
@@ -516,20 +818,20 @@ setInterval(
           8;
 
         if (x === 0) {
-          context.moveTo(
+          radarContext.moveTo(
             x,
             waveY
           );
         }
         else {
-          context.lineTo(
+          radarContext.lineTo(
             x,
             waveY
           );
         }
       }
 
-      context.stroke();
+      radarContext.stroke();
     }
 
     const centerX =
@@ -545,10 +847,10 @@ setInterval(
       ) *
       0.39;
 
-    context.globalAlpha =
+    radarContext.globalAlpha =
       0.24;
 
-    context.strokeStyle =
+    radarContext.strokeStyle =
       green;
 
     for (
@@ -556,36 +858,35 @@ setInterval(
       ring <= 4;
       ring += 1
     ) {
-      context.beginPath();
+      radarContext.beginPath();
 
-      context.arc(
+      radarContext.arc(
         centerX,
         centerY,
         radius *
         ring /
         4,
         0,
-        Math.PI *
-        2
+        Math.PI * 2
       );
 
-      context.stroke();
+      radarContext.stroke();
     }
 
-    context.globalAlpha =
+    radarContext.globalAlpha =
       0.18;
 
-    context.fillStyle =
+    radarContext.fillStyle =
       orange;
 
-    context.beginPath();
+    radarContext.beginPath();
 
-    context.moveTo(
+    radarContext.moveTo(
       centerX,
       centerY
     );
 
-    context.arc(
+    radarContext.arc(
       centerX,
       centerY,
       radius,
@@ -593,82 +894,276 @@ setInterval(
       -0.29
     );
 
-    context.closePath();
-    context.fill();
+    radarContext.closePath();
+    radarContext.fill();
 
-    context.globalAlpha =
+    radarContext.globalAlpha =
       1;
   }
 
-  resizeCanvas();
-  draw();
+  if (
+    radarCanvas &&
+    radarContext
+  ) {
+    resizeRadar();
+    drawRadar();
 
-  let resizeTimer = null;
+    let resizeTimer =
+      null;
 
-  window.addEventListener(
-    "resize",
-    function () {
-      clearTimeout(
-        resizeTimer
-      );
-
-      resizeTimer =
-        setTimeout(
-          function () {
-            resizeCanvas();
-            draw();
-          },
-          120
+    window.addEventListener(
+      "resize",
+      () => {
+        clearTimeout(
+          resizeTimer
         );
-    },
-    {
-      passive: true
-    }
-  );
 
-  window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).addEventListener(
-    "change",
-    draw
-  );
-})();
-
-
-// TRADINGVIEW THEME SYNC
-// ==================================================
-
-function updateMarketTheme() {
-  const widget =
-    getElement(
-      "#market-widget"
+        resizeTimer =
+          setTimeout(
+            () => {
+              resizeRadar();
+              drawRadar();
+            },
+            140
+          );
+      },
+      {
+        passive: true
+      }
     );
 
-  if (!widget) {
-    return;
+    new MutationObserver(
+      (mutations) => {
+        if (
+          mutations.some(
+            mutation =>
+              mutation.attributeName ===
+              "data-theme"
+          )
+        ) {
+          drawRadar();
+        }
+      }
+    ).observe(
+      document.documentElement,
+      {
+        attributes: true
+      }
+    );
   }
 
-  const darkMode =
-    window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
 
-  widget.setAttribute(
-    "theme",
-    darkMode
-      ? "dark"
-      : "light"
+  // ==================================================
+  // NOW DATA
+  // ==================================================
+
+  async function loadSiteData() {
+    try {
+      const response =
+        await fetch(
+          "data/site.json",
+          {
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "Site data unavailable"
+        );
+      }
+
+      const data =
+        await response.json();
+
+      const now =
+        data.now ||
+        {};
+
+      if (data.updated) {
+        setText(
+          "#now-updated",
+          "UPDATED " +
+          data.updated
+        );
+      }
+
+      if (now.workingTitle) {
+        setText(
+          "#now-working-title",
+          now.workingTitle
+        );
+      }
+
+      const list =
+        get(
+          "#now-working-list"
+        );
+
+      if (
+        list &&
+        Array.isArray(
+          now.working
+        )
+      ) {
+        list.innerHTML =
+          "";
+
+        now.working
+          .slice(0, 5)
+          .forEach(
+            item => {
+              const li =
+                document.createElement(
+                  "li"
+                );
+
+              li.textContent =
+                item;
+
+              list.appendChild(
+                li
+              );
+            }
+          );
+      }
+
+      if (
+        now.listening?.label
+      ) {
+        setText(
+          "#now-listening",
+          now.listening.label
+        );
+      }
+
+      if (
+        now.listening?.detail
+      ) {
+        setText(
+          "#now-listening-detail",
+          now.listening.detail
+        );
+      }
+
+      const spotify =
+        get(
+          "#spotify-profile"
+        );
+
+      const spotifyUrl =
+        now.listening
+          ?.spotifyUrl ||
+        data.socials
+          ?.spotifyUrl ||
+        "";
+
+      if (
+        spotify &&
+        spotifyUrl
+      ) {
+        spotify.href =
+          spotifyUrl;
+
+        spotify.target =
+          "_blank";
+
+        spotify.rel =
+          "noreferrer";
+
+        spotify.textContent =
+          "OPEN MY SPOTIFY ↗";
+
+        spotify.classList.remove(
+          "is-disabled"
+        );
+
+        spotify.removeAttribute(
+          "aria-disabled"
+        );
+      }
+
+      if (now.reading?.title) {
+        setText(
+          "#now-reading",
+          now.reading.title
+        );
+      }
+
+      if (now.reading?.detail) {
+        setText(
+          "#now-reading-detail",
+          now.reading.detail
+        );
+      }
+
+      if (now.watching?.title) {
+        setText(
+          "#now-watching",
+          now.watching.title
+        );
+      }
+
+      if (now.watching?.detail) {
+        setText(
+          "#now-watching-detail",
+          now.watching.detail
+        );
+      }
+    }
+    catch (error) {
+      console.warn(
+        "Using built-in Now content:",
+        error
+      );
+    }
+  }
+
+  loadSiteData();
+
+
+  // ==================================================
+  // TRADINGVIEW THEME
+  // ==================================================
+
+  function updateMarketTheme() {
+    const widget =
+      get(
+        "#market-widget"
+      );
+
+    if (!widget) {
+      return;
+    }
+
+    const darkThemes = [
+      "night",
+      "storm",
+      "aurora"
+    ];
+
+    widget.setAttribute(
+      "theme",
+      darkThemes.includes(
+        document.documentElement
+          .dataset.theme
+      )
+        ? "dark"
+        : "light"
+    );
+  }
+
+  updateMarketTheme();
+
+  new MutationObserver(
+    updateMarketTheme
+  ).observe(
+    document.documentElement,
+    {
+      attributes: true,
+      attributeFilter: [
+        "data-theme"
+      ]
+    }
   );
-}
-
-updateMarketTheme();
-
-window.matchMedia(
-  "(prefers-color-scheme: dark)"
-).addEventListener(
-  "change",
-  updateMarketTheme
-);
-
-
-// ==================================================
+})();
