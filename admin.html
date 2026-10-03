@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" data-theme="night" data-font="signal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>Owner Portal — Rithvik Central</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600;700&display=block"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="admin-page">
+  <header class="admin-topbar">
+    <a href="index.html" class="mark">
+      <span class="pulse" aria-hidden="true"></span>
+      RITHVIK / OWNER PORTAL
+    </a>
+
+    <a href="index.html" class="admin-toplink">
+      VIEW SITE ↗
+    </a>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-intro">
+      <span class="label">Private control / GitHub-backed</span>
+
+      <h1>Owner<br>portal</h1>
+
+      <p>
+        Update the live “Now” section without editing HTML. The portal writes
+        only to <code>data/site.json</code> in your GitHub repository, which
+        triggers a normal GitHub Pages deployment.
+      </p>
+    </section>
+
+    <section class="admin-panel" id="login-panel">
+      <div class="admin-panel-head">
+        <div>
+          <span class="admin-index">AUTH / 01</span>
+          <h2>Connect as owner</h2>
+        </div>
+
+        <span class="admin-status" id="login-status">LOCKED</span>
+      </div>
+
+      <p class="admin-note">
+        Because GitHub Pages is a static host, there is no safe place to store
+        an owner password on the site itself. This portal uses a
+        <strong>fine-grained GitHub personal access token</strong> instead.
+        Give that token access only to this repository with
+        <strong>Contents: Read and write</strong>. It is kept in this browser
+        tab’s session storage and is never committed to the website.
+      </p>
+
+      <form class="admin-form" id="login-form">
+        <label>
+          <span>GITHUB USERNAME</span>
+          <input
+            id="admin-username"
+            value="rithvikgowda432-creator"
+            autocomplete="username"
+            required
+          >
+        </label>
+
+        <label>
+          <span>FINE-GRAINED TOKEN</span>
+          <input
+            id="admin-token"
+            type="password"
+            autocomplete="current-password"
+            placeholder="github_pat_..."
+            required
+          >
+        </label>
+
+        <button type="submit" class="admin-primary">
+          CONNECT TO GITHUB
+          <span>↗</span>
+        </button>
+      </form>
+    </section>
+
+    <section class="admin-panel" id="editor-panel" hidden>
+      <div class="admin-panel-head">
+        <div>
+          <span class="admin-index">CONTENT / 02</span>
+          <h2>Now section</h2>
+        </div>
+
+        <span class="admin-status admin-status-live" id="editor-status">
+          CONNECTED
+        </span>
+      </div>
+
+      <form class="admin-form admin-editor" id="content-form">
+        <div class="admin-grid-two">
+          <label>
+            <span>UPDATED DATE</span>
+            <input
+              id="field-updated"
+              type="date"
+            >
+          </label>
+
+          <label>
+            <span>WORKING TITLE</span>
+            <input
+              id="field-working-title"
+              placeholder="Current build queue"
+            >
+          </label>
+        </div>
+
+        <label>
+          <span>WORKING ON · ONE ITEM PER LINE</span>
+          <textarea
+            id="field-working"
+            rows="7"
+            placeholder="Project one&#10;Project two&#10;Project three"
+          ></textarea>
+        </label>
+
+        <div class="admin-divider"></div>
+
+        <label>
+          <span>CURRENTLY LISTENING TO</span>
+          <input
+            id="field-listening"
+            placeholder="Artist, playlist, genre, or current rotation"
+          >
+        </label>
+
+        <label>
+          <span>LISTENING DETAIL</span>
+          <input
+            id="field-listening-detail"
+            placeholder="Optional detail"
+          >
+        </label>
+
+        <label>
+          <span>SPOTIFY PROFILE URL</span>
+          <input
+            id="field-spotify"
+            type="url"
+            placeholder="https://open.spotify.com/user/..."
+          >
+        </label>
+
+        <div class="admin-divider"></div>
+
+        <div class="admin-grid-two">
+          <label>
+            <span>CURRENTLY READING</span>
+            <input
+              id="field-reading"
+              placeholder="Book, article, or topic"
+            >
+          </label>
+
+          <label>
+            <span>READING DETAIL</span>
+            <input
+              id="field-reading-detail"
+              placeholder="Author or note"
+            >
+          </label>
+
+          <label>
+            <span>CURRENTLY WATCHING</span>
+            <input
+              id="field-watching"
+              placeholder="Show, movie, game, or channel"
+            >
+          </label>
+
+          <label>
+            <span>WATCHING DETAIL</span>
+            <input
+              id="field-watching-detail"
+              placeholder="Optional note"
+            >
+          </label>
+        </div>
+
+        <div class="admin-divider"></div>
+
+        <label>
+          <span>INSTAGRAM URL</span>
+          <input
+            id="field-instagram"
+            type="url"
+            placeholder="https://instagram.com/..."
+          >
+        </label>
+
+        <div class="admin-actions">
+          <button type="submit" class="admin-primary" id="save-button">
+            SAVE + PUBLISH
+            <span>↗</span>
+          </button>
+
+          <button type="button" class="admin-secondary" id="reload-button">
+            RELOAD DATA
+          </button>
+
+          <button type="button" class="admin-secondary" id="logout-button">
+            LOG OUT
+          </button>
+        </div>
+      </form>
+
+      <div class="admin-message" id="admin-message" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

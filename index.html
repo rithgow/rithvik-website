@@ -1,16 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-font="signal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Rithvik Gowda — weather, markets, design, business ideas, and experience.">
+  <meta
+    name="description"
+    content="Rithvik Gowda — weather, markets, design, business ideas, and experience."
+  >
+
   <title>Rithvik Gowda — Atmosphere &amp; Assets</title>
+
+  <script>
+    (() => {
+      try {
+        const savedTheme = localStorage.getItem("rg-theme");
+        const savedFont = localStorage.getItem("rg-font") || "signal";
+        const hour = new Date().getHours();
+        const automaticTheme = hour >= 19 || hour < 6 ? "night" : "sunny";
+
+        document.documentElement.dataset.theme =
+          savedTheme || automaticTheme;
+
+        document.documentElement.dataset.font =
+          savedFont;
+      }
+      catch (error) {
+        document.documentElement.dataset.theme = "sunny";
+      }
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600;700&display=block"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,650&family=Source+Sans+3:wght@400;500;600;700&display=block"
     rel="stylesheet"
   >
 
@@ -23,8 +48,42 @@
 </head>
 
 <body>
+  <!-- Entrance: fixed and isolated so it never changes the page layout. -->
+  <div class="entrance" id="entrance" aria-label="Welcome to Rithvik Central">
+    <div class="entrance-weather" aria-hidden="true">
+      <div class="entrance-cloud cloud-a"></div>
+      <div class="entrance-cloud cloud-b"></div>
+      <div class="entrance-cloud cloud-c"></div>
+      <div class="entrance-rain"></div>
+    </div>
+
+    <div class="entrance-brand">RITHVIK / CENTRAL</div>
+
+    <div class="entrance-copy">
+      <span class="entrance-greeting" id="entrance-greeting">GOOD EVENING</span>
+
+      <h1 class="entrance-title">
+        Atmosphere
+        <span>&amp; Assets</span>
+      </h1>
+
+      <p>
+        Weather, markets, design, and whatever I’m building next.
+      </p>
+
+      <button class="enter-button" id="enter-site" type="button">
+        ENTER SITE
+        <span aria-hidden="true">↘</span>
+      </button>
+
+      <small>
+        Local weather can use your location after you enter.
+      </small>
+    </div>
+  </div>
+
   <nav class="nav" aria-label="Page sections">
-    <a class="mark" href="#home" aria-label="Back to home">
+    <a class="mark" href="#home" aria-label="Back to home" id="site-mark">
       <span class="pulse" aria-hidden="true"></span>
       RITHVIK / CENTRAL
     </a>
@@ -32,6 +91,7 @@
     <div class="navlinks">
       <a href="#weather">Weather</a>
       <a href="#projects">Projects</a>
+      <a href="#now">Now</a>
       <a href="#experience">Experience</a>
       <a href="#signals">Signals</a>
       <a href="#contact">Contact</a>
@@ -40,6 +100,16 @@
     <div class="nav-meta">
       <span>STARKVILLE, MS</span>
       <strong id="central-time">--:-- CT</strong>
+
+      <button
+        class="control-trigger"
+        id="open-control"
+        type="button"
+        aria-label="Open control center"
+      >
+        CONTROL
+        <kbd>⇧ K</kbd>
+      </button>
     </div>
   </nav>
 
@@ -75,7 +145,7 @@
       </div>
 
       <div class="sky-topline">
-        <span>WX / STARKVILLE</span>
+        <span id="weather-location">WX / STARKVILLE</span>
         <span id="weather-updated">SYNCING</span>
       </div>
 
@@ -91,14 +161,17 @@
             <span>FEELS</span>
             <strong id="feels-like">--°</strong>
           </div>
+
           <div>
             <span>HUMIDITY</span>
             <strong id="humidity">--%</strong>
           </div>
+
           <div>
             <span>WIND</span>
             <strong id="wind">-- mph</strong>
           </div>
+
           <div>
             <span>PRESSURE</span>
             <strong id="pressure">-- hPa</strong>
@@ -108,9 +181,19 @@
 
       <div class="sky-caption">
         <strong>Local<br>front</strong>
+
         <div class="time">
-          33.45°N / 88.82°W<br>
-          <span id="wind-direction">--</span> WIND · <span id="visibility">-- mi</span>
+          <span id="weather-coordinates">33.45°N / 88.82°W</span><br>
+          <span id="wind-direction">--</span> WIND ·
+          <span id="visibility">-- mi</span><br>
+
+          <button
+            class="location-button"
+            id="refresh-location"
+            type="button"
+          >
+            USE MY LOCATION
+          </button>
         </div>
       </div>
     </div>
@@ -125,19 +208,14 @@
       <span class="tick up">WRAPS + STRIPES</span>
       <span class="tick">WEB DEVELOPMENT</span>
       <span class="tick signal">BUILD → TEST → LEARN</span>
-
-      <span class="tick up">METEOROLOGY ▲</span>
-      <span class="tick">FINANCE / OPERATIONS</span>
-      <span class="tick signal">STARKVILLE / MS</span>
-      <span class="tick">ENTREPRENEURSHIP</span>
-      <span class="tick up">WRAPS + STRIPES</span>
-      <span class="tick">WEB DEVELOPMENT</span>
-      <span class="tick signal">BUILD → TEST → LEARN</span>
     </div>
   </div>
 
   <main>
-    <section class="page-section signal-board" aria-labelledby="signal-board-title">
+    <section
+      class="page-section signal-board"
+      aria-labelledby="signal-board-title"
+    >
       <div class="section-head">
         <div>
           <span class="label">Signal board</span>
@@ -166,11 +244,30 @@
           </div>
 
           <div class="weather-table">
-            <div><span>DEW POINT</span><strong id="dew-point">--°</strong></div>
-            <div><span>CLOUD COVER</span><strong id="cloud-cover">--%</strong></div>
-            <div><span>GUST</span><strong id="gust">-- mph</strong></div>
-            <div><span>SUNRISE</span><strong id="sunrise">--:--</strong></div>
-            <div><span>SUNSET</span><strong id="sunset">--:--</strong></div>
+            <div>
+              <span>DEW POINT</span>
+              <strong id="dew-point">--°</strong>
+            </div>
+
+            <div>
+              <span>CLOUD COVER</span>
+              <strong id="cloud-cover">--%</strong>
+            </div>
+
+            <div>
+              <span>GUST</span>
+              <strong id="gust">-- mph</strong>
+            </div>
+
+            <div>
+              <span>SUNRISE</span>
+              <strong id="sunrise">--:--</strong>
+            </div>
+
+            <div>
+              <span>SUNSET</span>
+              <strong id="sunset">--:--</strong>
+            </div>
           </div>
         </article>
 
@@ -219,11 +316,14 @@
         <article class="card wide">
           <span class="index">PROJECT / 01</span>
           <span class="arrow">↗</span>
+
           <h3>Wraps &amp; stripes lab</h3>
+
           <p>
             Reusable Roblox vehicle wraps, stripe layouts, fades, decal effects,
             seam cleanup, color systems, and clean in-game fit.
           </p>
+
           <div class="tagrow">
             <span class="tag">ROBLOX</span>
             <span class="tag">WRAPS</span>
@@ -235,7 +335,9 @@
         <article class="card narrow">
           <span class="index">PROJECT / 02</span>
           <span class="arrow">↗</span>
+
           <h3>Student living concept</h3>
+
           <p>
             A student-focused housing idea built around digital operations,
             useful amenities, local partnerships, and a stronger resident
@@ -246,7 +348,9 @@
         <article class="card half">
           <span class="index">PROJECT / 03</span>
           <span class="arrow">↗</span>
+
           <h3>College entertainment</h3>
+
           <p>
             An affordable Starkville social venue combining activities,
             gaming, food, and repeatable student experiences.
@@ -256,11 +360,94 @@
         <article class="card half">
           <span class="index">PROJECT / 04</span>
           <span class="arrow">↗</span>
+
           <h3>Interactive baseball</h3>
+
           <p>
             A lower-cost indoor batting system using a pitching machine,
             projector, impact screen, sensors, custom software, and
             leaderboards.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-section now-section" id="now">
+      <div class="section-head">
+        <div>
+          <span class="label">Right now</span>
+          <h2>Current<br>signals</h2>
+        </div>
+
+        <p>
+          A small live notebook for what I’m building, hearing, reading, and
+          watching at the moment. I can update this from the owner portal.
+        </p>
+      </div>
+
+      <div class="now-grid">
+        <article class="now-card now-card-wide">
+          <div class="now-card-head">
+            <span>01 / WORKING ON</span>
+            <span id="now-updated">LIVE NOTE</span>
+          </div>
+
+          <h3 id="now-working-title">Current build queue</h3>
+
+          <ul class="now-list" id="now-working-list">
+            <li>Polishing rithvikgowda.com and its control center.</li>
+            <li>Roblox wraps, stripes, and vehicle effects.</li>
+            <li>Starkville entertainment and simulator concepts.</li>
+          </ul>
+        </article>
+
+        <article class="now-card">
+          <div class="now-card-head">
+            <span>02 / LISTENING</span>
+            <span>SPOTIFY</span>
+          </div>
+
+          <h3 id="now-listening">
+            Indie / alternative · bloghouse · indie sleaze
+          </h3>
+
+          <p id="now-listening-detail">
+            Current rotation.
+          </p>
+
+          <a
+            class="now-action is-disabled"
+            id="spotify-profile"
+            href="#"
+            aria-disabled="true"
+          >
+            SPOTIFY PROFILE NOT SET
+          </a>
+        </article>
+
+        <article class="now-card">
+          <div class="now-card-head">
+            <span>03 / READING</span>
+            <span>BOOKS + ARTICLES</span>
+          </div>
+
+          <h3 id="now-reading">Not set yet</h3>
+
+          <p id="now-reading-detail">
+            Update this from the owner portal.
+          </p>
+        </article>
+
+        <article class="now-card">
+          <div class="now-card-head">
+            <span>04 / WATCHING</span>
+            <span>SCREEN</span>
+          </div>
+
+          <h3 id="now-watching">Not set yet</h3>
+
+          <p id="now-watching-detail">
+            Update this from the owner portal.
           </p>
         </article>
       </div>
@@ -283,7 +470,9 @@
       <div class="timeline">
         <article class="job">
           <time>RETAIL</time>
+
           <h3>Target</h3>
+
           <p>
             Fulfillment Expert, Service Advocate, and Checkout Advocate —
             customer service, fulfillment, checkout, and store operations.
@@ -292,7 +481,9 @@
 
         <article class="job">
           <time>2023 — 2025</time>
+
           <h3>OneBlood</h3>
+
           <p>
             Assistant and volunteer support for donation sessions, supplies,
             inventory, setup, donor education, and post-donation help.
@@ -301,7 +492,9 @@
 
         <article class="job">
           <time>2023</time>
+
           <h3>Summer camp counselor</h3>
+
           <p>
             Led activities, coached campers, supported awards and merit badges,
             and helped build a positive team environment.
@@ -327,6 +520,7 @@
       <div class="skills-grid">
         <div class="skillgroup">
           <h3>Working toolkit</h3>
+
           <ul class="skill-list">
             <li><span>HTML / CSS / JavaScript</span><code>WEB</code></li>
             <li><span>Adobe Dreamweaver</span><code>BUILD</code></li>
@@ -339,6 +533,7 @@
 
         <div class="skillgroup">
           <h3>Forecast map</h3>
+
           <ul class="skill-list">
             <li><span>Meteorology</span><code>SKY</code></li>
             <li><span>Finance &amp; markets</span><code>ASSETS</code></li>
@@ -361,7 +556,10 @@
         </p>
 
         <div class="contact-stack" aria-label="Contact and social links">
-          <a class="contact-social" href="mailto:rithvikgowda432@gmail.com">
+          <a
+            class="contact-social"
+            href="mailto:rithvikgowda432@gmail.com"
+          >
             <span>EMAIL</span>
             <strong>rithvikgowda432@gmail.com</strong>
             <span aria-hidden="true">↗</span>
@@ -378,30 +576,208 @@
             <span aria-hidden="true">↗</span>
           </a>
 
-          <a class="contact-social" href="tel:+18505307940">
+          <a
+            class="contact-social"
+            href="tel:+18505307940"
+          >
             <span>PHONE</span>
             <strong>(850) 530-7940</strong>
             <span aria-hidden="true">↗</span>
           </a>
 
-          <div class="contact-social contact-social-pending" aria-label="Instagram handle pending confirmation">
+          <a
+            class="contact-social contact-social-pending"
+            id="instagram-contact"
+            href="#"
+            aria-disabled="true"
+            aria-label="Instagram handle pending confirmation"
+          >
             <span>INSTAGRAM</span>
-            <strong>HANDLE NEEDED</strong>
+            <strong id="instagram-contact-label">HANDLE NEEDED</strong>
             <span aria-hidden="true">—</span>
-          </div>
+          </a>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="footer-big">Rithvik Gowda</div>
+    <div class="footer-big" id="footer-easter">Rithvik Gowda</div>
+
     <div>
       STARKVILLE, MISSISSIPPI<br>
-      WEATHER · MARKETS · DESIGN · BUSINESS
+      WEATHER · MARKETS · DESIGN · BUSINESS<br>
+      <a class="owner-link" href="admin.html">OWNER PORTAL ↗</a>
     </div>
   </footer>
 
+  <!-- Search / command center -->
+  <div
+    class="command-overlay"
+    id="command-overlay"
+    aria-hidden="true"
+  >
+    <div
+      class="command-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Control center"
+    >
+      <div class="command-head">
+        <span>RITHVIK / CONTROL CENTER</span>
+        <kbd>ESC</kbd>
+      </div>
+
+      <label class="command-search">
+        <span>&gt;</span>
+
+        <input
+          id="command-search"
+          type="search"
+          autocomplete="off"
+          placeholder="Search pages, settings, commands…"
+        >
+      </label>
+
+      <div class="command-results" id="command-results"></div>
+
+      <div class="command-foot">
+        <span>↑ ↓ NAVIGATE</span>
+        <span>ENTER OPEN</span>
+        <span>⇧ K TOGGLE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appearance + audio settings -->
+  <div
+    class="settings-overlay"
+    id="settings-overlay"
+    aria-hidden="true"
+  >
+    <aside
+      class="settings-panel"
+      id="settings-panel"
+      aria-label="Site settings"
+    >
+      <div class="settings-head">
+        <div>
+          <span class="settings-kicker">ATMOSPHERE CONTROL</span>
+          <h2>Site settings</h2>
+        </div>
+
+        <button
+          class="icon-button"
+          id="close-settings"
+          type="button"
+          aria-label="Close settings"
+        >
+          ×
+        </button>
+      </div>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>COLOR SCHEME</span>
+          <small>Choose the weather for the interface.</small>
+        </div>
+
+        <div class="theme-grid">
+          <button class="theme-choice" data-theme-choice="sunny" type="button">
+            <span class="theme-swatch sunny-swatch"></span>
+            <strong>Sunny Afternoon</strong>
+            <small>LIGHT / WARM</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="night" type="button">
+            <span class="theme-swatch night-swatch"></span>
+            <strong>Night Sky</strong>
+            <small>DARK / NAVY</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="storm" type="button">
+            <span class="theme-swatch storm-swatch"></span>
+            <strong>Storm Front</strong>
+            <small>DARK / SLATE</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="golden" type="button">
+            <span class="theme-swatch golden-swatch"></span>
+            <strong>Golden Hour</strong>
+            <small>LIGHT / AMBER</small>
+          </button>
+
+          <button
+            class="theme-choice secret-theme-choice"
+            data-theme-choice="aurora"
+            id="aurora-theme-choice"
+            type="button"
+            hidden
+          >
+            <span class="theme-swatch aurora-swatch"></span>
+            <strong>Aurora Watch</strong>
+            <small>SECRET / NIGHT</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>TYPE SYSTEM</span>
+          <small>Changes the voice, not the content.</small>
+        </div>
+
+        <label class="field-row">
+          <span>FONT</span>
+
+          <select id="font-select">
+            <option value="signal">Signal Standard</option>
+            <option value="observatory">Observatory Mono</option>
+            <option value="journal">Field Journal</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>SOUND</span>
+          <small>Only quiet interaction cues — never on hover.</small>
+        </div>
+
+        <div class="sound-controls">
+          <button
+            class="sound-toggle"
+            id="sound-toggle"
+            type="button"
+            aria-pressed="true"
+          >
+            SOUND ON
+          </button>
+
+          <label class="volume-control">
+            <span>VOLUME</span>
+            <input
+              id="volume-slider"
+              type="range"
+              min="0"
+              max="100"
+              value="12"
+            >
+            <output id="volume-output">12%</output>
+          </label>
+        </div>
+      </section>
+
+      <div class="settings-foot">
+        <span>Preferences stay on this device.</span>
+        <a href="admin.html">OWNER PORTAL ↗</a>
+      </div>
+    </aside>
+  </div>
+
+  <div class="site-toast" id="site-toast" aria-live="polite"></div>
+
+  <script src="js/ui.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en" data-font="signal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+
+  <title>404 — Rithvik Central</title>
+
+  <script>
+    (() => {
+      try {
+        const savedTheme = localStorage.getItem("rg-theme");
+        const savedFont = localStorage.getItem("rg-font") || "signal";
+        const hour = new Date().getHours();
+
+        document.documentElement.dataset.theme =
+          savedTheme ||
+          (hour >= 19 || hour < 6 ? "night" : "sunny");
+
+        document.documentElement.dataset.font =
+          savedFont;
+      }
+      catch (error) {
+        document.documentElement.dataset.theme = "sunny";
+      }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,650&family=Source+Sans+3:wght@400;500;600;700&display=block"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="page-404">
+  <nav class="nav" aria-label="404 navigation">
+    <a class="mark" href="index.html">
+      <span class="pulse" aria-hidden="true"></span>
+      RITHVIK / CENTRAL
+    </a>
+
+    <div></div>
+
+    <div class="nav-meta">
+      <span>FRONT / LOST</span>
+
+      <button
+        class="control-trigger"
+        id="open-control"
+        type="button"
+      >
+        CONTROL
+        <kbd>⇧ K</kbd>
+      </button>
+    </div>
+  </nav>
+
+  <main class="not-found">
+    <div class="not-found-inner">
+      <span class="label">Navigation error / weather advisory</span>
+
+      <span class="not-found-code">404</span>
+
+      <h1>Front not found.</h1>
+
+      <p>
+        This page drifted off the map. The rest of the forecast is still
+        available.
+      </p>
+
+      <div class="not-found-actions">
+        <a href="index.html">
+          RETURN HOME ↗
+        </a>
+
+        <button
+          type="button"
+          onclick="document.getElementById('settings-overlay').classList.add('is-open'); document.getElementById('settings-overlay').setAttribute('aria-hidden','false');"
+        >
+          CHANGE ATMOSPHERE
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-big" id="footer-easter">Rithvik Gowda</div>
+
+    <div>
+      404 / SIGNAL LOST<br>
+      WEATHER · MARKETS · DESIGN · BUSINESS
+    </div>
+  </footer>
+
+  <div
+    class="command-overlay"
+    id="command-overlay"
+    aria-hidden="true"
+  >
+    <div
+      class="command-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Control center"
+    >
+      <div class="command-head">
+        <span>RITHVIK / CONTROL CENTER</span>
+        <kbd>ESC</kbd>
+      </div>
+
+      <label class="command-search">
+        <span>&gt;</span>
+
+        <input
+          id="command-search"
+          type="search"
+          autocomplete="off"
+          placeholder="Search commands…"
+        >
+      </label>
+
+      <div class="command-results" id="command-results"></div>
+
+      <div class="command-foot">
+        <span>↑ ↓ NAVIGATE</span>
+        <span>ENTER OPEN</span>
+        <span>⇧ K TOGGLE</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="settings-overlay"
+    id="settings-overlay"
+    aria-hidden="true"
+  >
+    <aside class="settings-panel" aria-label="Site settings">
+      <div class="settings-head">
+        <div>
+          <span class="settings-kicker">ATMOSPHERE CONTROL</span>
+          <h2>Site settings</h2>
+        </div>
+
+        <button
+          class="icon-button"
+          id="close-settings"
+          type="button"
+          aria-label="Close settings"
+        >
+          ×
+        </button>
+      </div>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>COLOR SCHEME</span>
+          <small>The 404 follows the same weather as the main site.</small>
+        </div>
+
+        <div class="theme-grid">
+          <button class="theme-choice" data-theme-choice="sunny" type="button">
+            <span class="theme-swatch sunny-swatch"></span>
+            <strong>Sunny Afternoon</strong>
+            <small>LIGHT / WARM</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="night" type="button">
+            <span class="theme-swatch night-swatch"></span>
+            <strong>Night Sky</strong>
+            <small>DARK / NAVY</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="storm" type="button">
+            <span class="theme-swatch storm-swatch"></span>
+            <strong>Storm Front</strong>
+            <small>DARK / SLATE</small>
+          </button>
+
+          <button class="theme-choice" data-theme-choice="golden" type="button">
+            <span class="theme-swatch golden-swatch"></span>
+            <strong>Golden Hour</strong>
+            <small>LIGHT / AMBER</small>
+          </button>
+
+          <button
+            class="theme-choice"
+            data-theme-choice="aurora"
+            id="aurora-theme-choice"
+            type="button"
+            hidden
+          >
+            <span class="theme-swatch aurora-swatch"></span>
+            <strong>Aurora Watch</strong>
+            <small>SECRET / NIGHT</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>TYPE SYSTEM</span>
+          <small>Same font preference as the main site.</small>
+        </div>
+
+        <label class="field-row">
+          <span>FONT</span>
+
+          <select id="font-select">
+            <option value="signal">Signal Standard</option>
+            <option value="observatory">Observatory Mono</option>
+            <option value="journal">Field Journal</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="settings-group">
+        <div class="settings-label">
+          <span>SOUND</span>
+          <small>Quiet interaction cues.</small>
+        </div>
+
+        <div class="sound-controls">
+          <button
+            class="sound-toggle"
+            id="sound-toggle"
+            type="button"
+          >
+            SOUND ON
+          </button>
+
+          <label class="volume-control">
+            <span>VOLUME</span>
+
+            <input
+              id="volume-slider"
+              type="range"
+              min="0"
+              max="100"
+              value="12"
+            >
+
+            <output id="volume-output">12%</output>
+          </label>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="site-toast" id="site-toast" aria-live="polite"></div>
+
+  <script src="js/ui.js"></script>
+</body>
+</html>
