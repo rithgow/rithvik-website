@@ -10,15 +10,15 @@
     "listening": {
       "label": "Indie / alternative · bloghouse · indie sleaze",
       "detail": "Current rotation.",
-      "spotifyUrl": ""
+      "spotifyUrl": "https://open.spotify.com/user/31ojtlxcabqognnzmpv5i7rmt6qa"
     },
     "reading": {
-      "title": "Not set yet",
-      "detail": "Update this from the owner portal."
+      "title": "Nothing yet.",
+      "detail": "N/A"
     },
     "watching": {
-      "title": "Not set yet",
-      "detail": "Update this from the owner portal."
+      "title": "Mumbai Diaries",
+      "detail": "A show about the various events that affects a hospital in Mumbai"
     }
   },
   "socials": {
@@ -26,6 +26,6 @@
     "linkedin": "https://www.linkedin.com/in/rithvikg",
     "phone": "+18505307940",
     "instagram": "",
-    "spotifyUrl": ""
+    "spotifyUrl": "https://open.spotify.com/user/31ojtlxcabqognnzmpv5i7rmt6qa"
   }
 }
