@@ -827,7 +827,8 @@
 
   function drawRadarBase(
     width,
-    height
+    height,
+    timestamp = 0
   ) {
     const panel =
       get(".sky-panel") ||
@@ -959,8 +960,21 @@
       radarContext.stroke();
     }
 
+    const sweepAngle =
+      radarReducedMotion
+        ? -0.76
+        : (
+            timestamp *
+            0.00075
+          ) %
+          (
+            Math.PI *
+            2
+          );
+
+    // Main orange radar sweep.
     radarContext.globalAlpha =
-      0.12;
+      0.14;
 
     radarContext.fillStyle =
       orange;
@@ -976,12 +990,44 @@
       centerX,
       centerY,
       radius,
-      -0.76,
-      -0.28
+      sweepAngle,
+      sweepAngle + 0.48
     );
 
     radarContext.closePath();
     radarContext.fill();
+
+    // Thin leading edge makes the sweep feel more like a real radar scope.
+    radarContext.globalAlpha =
+      0.42;
+
+    radarContext.strokeStyle =
+      orange;
+
+    radarContext.lineWidth =
+      1.25;
+
+    radarContext.beginPath();
+
+    radarContext.moveTo(
+      centerX,
+      centerY
+    );
+
+    radarContext.lineTo(
+      centerX +
+      Math.cos(
+        sweepAngle + 0.48
+      ) *
+      radius,
+      centerY +
+      Math.sin(
+        sweepAngle + 0.48
+      ) *
+      radius
+    );
+
+    radarContext.stroke();
 
     radarContext.globalAlpha =
       1;
@@ -1299,7 +1345,8 @@
     const geometry =
       drawRadarBase(
         width,
-        height
+        height,
+        timestamp
       );
 
     drawRadarWeather(
@@ -1309,18 +1356,9 @@
   }
 
   function animateRadarWeather() {
-    const animatedWeather =
-      radarWeatherCategory ===
-        "rain" ||
-      radarWeatherCategory ===
-        "storm" ||
-      radarWeatherCategory ===
-        "snow";
-
     if (
       radarVisible &&
       !document.hidden &&
-      animatedWeather &&
       !radarReducedMotion
     ) {
       drawRadar(
@@ -1408,7 +1446,7 @@
     if (!radarReducedMotion) {
       window.setInterval(
         animateRadarWeather,
-        100
+        84
       );
     }
   }
