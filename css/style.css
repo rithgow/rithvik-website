@@ -564,15 +564,33 @@ h1 {
 }
 
 .ticker-track {
-  width: 100%;
+  width: max-content;
 
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 
-  animation: none;
+  animation:
+    ticker 42s
+    linear
+    infinite;
 
-  will-change: auto;
-  transform: none;
+  will-change: transform;
+
+  transform:
+    translate3d(
+      0,
+      0,
+      0
+    );
+
+  backface-visibility:
+    hidden;
+}
+
+.ticker:hover .ticker-track,
+.ticker:focus-within .ticker-track {
+  animation-play-state:
+    paused;
 }
 
 body.is-scrolling .card,
