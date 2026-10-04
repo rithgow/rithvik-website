@@ -655,9 +655,6 @@
   let radarVisible =
     true;
 
-  let radarLastFrame =
-    0;
-
   const radarReducedMotion =
     window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -1311,9 +1308,7 @@
     );
   }
 
-  function radarLoop(
-    timestamp
-  ) {
+  function animateRadarWeather() {
     const animatedWeather =
       radarWeatherCategory ===
         "rain" ||
@@ -1326,22 +1321,12 @@
       radarVisible &&
       !document.hidden &&
       animatedWeather &&
-      !radarReducedMotion &&
-      timestamp -
-        radarLastFrame >=
-        100
+      !radarReducedMotion
     ) {
-      radarLastFrame =
-        timestamp;
-
       drawRadar(
-        timestamp
+        performance.now()
       );
     }
-
-    requestAnimationFrame(
-      radarLoop
-    );
   }
 
   if (
@@ -1420,9 +1405,12 @@
       }
     );
 
-    requestAnimationFrame(
-      radarLoop
-    );
+    if (!radarReducedMotion) {
+      window.setInterval(
+        animateRadarWeather,
+        100
+      );
+    }
   }
 
 
