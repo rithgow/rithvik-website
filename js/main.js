@@ -255,6 +255,12 @@
     );
   }
 
+  let radarWeatherCategory =
+    "cloudy";
+
+  let radarWeatherCode =
+    3;
+
   async function getWeather() {
     updateLocationLabels();
 
@@ -451,12 +457,21 @@
         updatedTime
       );
 
-      document.body.dataset.weather =
+      radarWeatherCode =
+        weather.weather_code;
+
+      radarWeatherCategory =
         getWeatherCategory(
           weather.weather_code
         );
 
-      drawRadar();
+      document.body.dataset.weather =
+        radarWeatherCategory;
+
+      rebuildRadarWeather();
+      drawRadar(
+        performance.now()
+      );
     }
     catch (error) {
       console.error(
@@ -608,20 +623,6 @@
     );
   }
 
-  document.addEventListener(
-    "site:entered",
-    () => {
-      if (
-        activeLocation.source !==
-        "visitor"
-      ) {
-        useVisitorLocation(
-          false
-        );
-      }
-    }
-  );
-
   getWeather();
 
   setInterval(
@@ -631,24 +632,11 @@
     1000
   );
 
-  try {
-    if (
-      sessionStorage.getItem(
-        "rg-entered"
-      ) === "1"
-    ) {
-      useVisitorLocation(
-        false
-      );
-    }
-  }
-  catch (error) {
-    // No-op.
-  }
-
-
   // ==================================================
-  // STATIC RADAR
+  // WEATHER-AWARE RADAR
+  //
+  // Only the canvas animates. Text and layout remain static.
+  // The loop is capped at 10 FPS and pauses off-screen.
   // ==================================================
 
   const radarCanvas =
@@ -660,6 +648,20 @@
           "2d"
         )
       : null;
+
+  let radarCells =
+    [];
+
+  let radarVisible =
+    true;
+
+  let radarLastFrame =
+    0;
+
+  const radarReducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
   function readColor(
     variableName,
@@ -673,6 +675,21 @@
         variableName
       )
       .trim();
+  }
+
+  function pseudoRandom(
+    index,
+    salt
+  ) {
+    const value =
+      Math.sin(
+        index * 12.9898 +
+        salt * 78.233
+      ) *
+      43758.5453;
+
+    return value -
+      Math.floor(value);
   }
 
   function resizeRadar() {
@@ -720,29 +737,101 @@
       0,
       0
     );
+
+    rebuildRadarWeather();
   }
 
-  function drawRadar() {
-    if (
-      !radarCanvas ||
-      !radarContext
-    ) {
+  function rebuildRadarWeather() {
+    if (!radarCanvas) {
       return;
     }
 
-    const width =
-      radarCanvas.clientWidth;
+    const category =
+      radarWeatherCategory;
 
-    const height =
-      radarCanvas.clientHeight;
+    let count =
+      0;
 
-    if (
-      width <= 0 ||
-      height <= 0
-    ) {
-      return;
+    if (category === "rain") {
+      count = 26;
+    }
+    else if (category === "storm") {
+      count = 34;
+    }
+    else if (category === "snow") {
+      count = 42;
+    }
+    else if (category === "cloudy") {
+      count = 9;
     }
 
+    radarCells =
+      Array.from(
+        {
+          length: count
+        },
+        (_, index) => ({
+          angle:
+            pseudoRandom(
+              index,
+              1
+            ) *
+            Math.PI *
+            2,
+
+          distance:
+            0.12 +
+            pseudoRandom(
+              index,
+              2
+            ) *
+            0.82,
+
+          size:
+            7 +
+            pseudoRandom(
+              index,
+              3
+            ) *
+            (
+              category ===
+              "storm"
+                ? 34
+                : category ===
+                  "snow"
+                  ? 10
+                  : 23
+            ),
+
+          phase:
+            pseudoRandom(
+              index,
+              4
+            ) *
+            Math.PI *
+            2,
+
+          strength:
+            0.22 +
+            pseudoRandom(
+              index,
+              5
+            ) *
+            0.66,
+
+          core:
+            pseudoRandom(
+              index,
+              6
+            )
+        })
+      );
+  }
+
+  function drawRadarBase(
+    width,
+    height
+  ) {
     const panel =
       get(".sky-panel") ||
       document.documentElement;
@@ -789,7 +878,7 @@
     );
 
     radarContext.globalAlpha =
-      0.12;
+      0.1;
 
     radarContext.strokeStyle =
       ink;
@@ -807,7 +896,7 @@
       for (
         let x = 0;
         x <= width;
-        x += 10
+        x += 12
       ) {
         const waveY =
           y +
@@ -848,7 +937,7 @@
       0.39;
 
     radarContext.globalAlpha =
-      0.24;
+      0.22;
 
     radarContext.strokeStyle =
       green;
@@ -874,7 +963,7 @@
     }
 
     radarContext.globalAlpha =
-      0.18;
+      0.12;
 
     radarContext.fillStyle =
       orange;
@@ -890,8 +979,8 @@
       centerX,
       centerY,
       radius,
-      -0.75,
-      -0.29
+      -0.76,
+      -0.28
     );
 
     radarContext.closePath();
@@ -899,6 +988,360 @@
 
     radarContext.globalAlpha =
       1;
+
+    return {
+      centerX,
+      centerY,
+      radius
+    };
+  }
+
+  function drawRadarWeather(
+    geometry,
+    timestamp
+  ) {
+    const category =
+      radarWeatherCategory;
+
+    if (
+      category === "clear" ||
+      radarCells.length === 0
+    ) {
+      return;
+    }
+
+    const {
+      centerX,
+      centerY,
+      radius
+    } = geometry;
+
+    const time =
+      radarReducedMotion
+        ? 0
+        : timestamp *
+          0.00016;
+
+    radarContext.save();
+
+    radarContext.beginPath();
+
+    radarContext.arc(
+      centerX,
+      centerY,
+      radius,
+      0,
+      Math.PI * 2
+    );
+
+    radarContext.clip();
+
+    radarCells.forEach(
+      (cell, index) => {
+        const driftX =
+          Math.sin(
+            time +
+            cell.phase
+          ) *
+          (
+            category ===
+            "snow"
+              ? 6
+              : 16
+          );
+
+        const driftY =
+          Math.cos(
+            time * 0.72 +
+            cell.phase
+          ) *
+          (
+            category ===
+            "snow"
+              ? 10
+              : 9
+          );
+
+        const cellRadius =
+          radius *
+          cell.distance;
+
+        const x =
+          centerX +
+          Math.cos(
+            cell.angle
+          ) *
+          cellRadius +
+          driftX;
+
+        const y =
+          centerY +
+          Math.sin(
+            cell.angle
+          ) *
+          cellRadius +
+          driftY;
+
+        if (
+          category ===
+          "snow"
+        ) {
+          radarContext.globalAlpha =
+            0.28 +
+            cell.strength *
+            0.3;
+
+          radarContext.fillStyle =
+            index % 3 === 0
+              ? "#e9fbff"
+              : "#9bd9e8";
+
+          radarContext.beginPath();
+
+          radarContext.arc(
+            x,
+            y,
+            Math.max(
+              1.4,
+              cell.size * 0.23
+            ),
+            0,
+            Math.PI * 2
+          );
+
+          radarContext.fill();
+
+          return;
+        }
+
+        if (
+          category ===
+          "cloudy"
+        ) {
+          radarContext.globalAlpha =
+            0.08 +
+            cell.strength *
+            0.08;
+
+          radarContext.fillStyle =
+            "#9bc0ba";
+
+          radarContext.beginPath();
+
+          radarContext.arc(
+            x,
+            y,
+            cell.size * 1.5,
+            0,
+            Math.PI * 2
+          );
+
+          radarContext.fill();
+
+          return;
+        }
+
+        // Doppler-like precipitation cells:
+        // green outer echoes, yellow/orange cores, red for stronger storms.
+        radarContext.globalAlpha =
+          0.18 +
+          cell.strength *
+          0.26;
+
+        radarContext.fillStyle =
+          "#29a65a";
+
+        radarContext.beginPath();
+
+        radarContext.arc(
+          x,
+          y,
+          cell.size * 1.35,
+          0,
+          Math.PI * 2
+        );
+
+        radarContext.fill();
+
+        radarContext.globalAlpha =
+          0.2 +
+          cell.strength *
+          0.3;
+
+        radarContext.fillStyle =
+          category === "storm"
+            ? (
+                cell.core > 0.72
+                  ? "#d5452e"
+                  : "#efaa2d"
+              )
+            : "#d9c83b";
+
+        radarContext.beginPath();
+
+        radarContext.arc(
+          x +
+          cell.size * 0.18,
+          y -
+          cell.size * 0.1,
+          cell.size *
+          (
+            category === "storm"
+              ? 0.72
+              : 0.48
+          ),
+          0,
+          Math.PI * 2
+        );
+
+        radarContext.fill();
+
+        if (
+          category === "storm" &&
+          cell.core > 0.84
+        ) {
+          radarContext.globalAlpha =
+            0.48;
+
+          radarContext.fillStyle =
+            "#b8272d";
+
+          radarContext.beginPath();
+
+          radarContext.arc(
+            x +
+            cell.size * 0.24,
+            y -
+            cell.size * 0.12,
+            cell.size * 0.3,
+            0,
+            Math.PI * 2
+          );
+
+          radarContext.fill();
+        }
+      }
+    );
+
+    radarContext.restore();
+    radarContext.globalAlpha =
+      1;
+
+    if (
+      category === "storm"
+    ) {
+      radarContext.save();
+
+      radarContext.globalAlpha =
+        0.08;
+
+      radarContext.strokeStyle =
+        "#f2f6df";
+
+      radarContext.lineWidth =
+        1;
+
+      const boltX =
+        centerX +
+        radius * 0.22;
+
+      const boltY =
+        centerY -
+        radius * 0.18;
+
+      radarContext.beginPath();
+
+      radarContext.moveTo(
+        boltX,
+        boltY
+      );
+
+      radarContext.lineTo(
+        boltX - 8,
+        boltY + 20
+      );
+
+      radarContext.lineTo(
+        boltX + 3,
+        boltY + 18
+      );
+
+      radarContext.lineTo(
+        boltX - 5,
+        boltY + 38
+      );
+
+      radarContext.stroke();
+      radarContext.restore();
+    }
+  }
+
+  function drawRadar(
+    timestamp = 0
+  ) {
+    if (
+      !radarCanvas ||
+      !radarContext
+    ) {
+      return;
+    }
+
+    const width =
+      radarCanvas.clientWidth;
+
+    const height =
+      radarCanvas.clientHeight;
+
+    if (
+      width <= 0 ||
+      height <= 0
+    ) {
+      return;
+    }
+
+    const geometry =
+      drawRadarBase(
+        width,
+        height
+      );
+
+    drawRadarWeather(
+      geometry,
+      timestamp
+    );
+  }
+
+  function radarLoop(
+    timestamp
+  ) {
+    const animatedWeather =
+      radarWeatherCategory ===
+        "rain" ||
+      radarWeatherCategory ===
+        "storm" ||
+      radarWeatherCategory ===
+        "snow";
+
+    if (
+      radarVisible &&
+      !document.hidden &&
+      animatedWeather &&
+      !radarReducedMotion &&
+      timestamp -
+        radarLastFrame >=
+        100
+    ) {
+      radarLastFrame =
+        timestamp;
+
+      drawRadar(
+        timestamp
+      );
+    }
+
+    requestAnimationFrame(
+      radarLoop
+    );
   }
 
   if (
@@ -906,7 +1349,26 @@
     radarContext
   ) {
     resizeRadar();
-    drawRadar();
+    rebuildRadarWeather();
+    drawRadar(0);
+
+    const observer =
+      new IntersectionObserver(
+        entries => {
+          radarVisible =
+            Boolean(
+              entries[0]
+                ?.isIntersecting
+            );
+        },
+        {
+          threshold: 0.04
+        }
+      );
+
+    observer.observe(
+      radarCanvas
+    );
 
     let resizeTimer =
       null;
@@ -922,9 +1384,11 @@
           setTimeout(
             () => {
               resizeRadar();
-              drawRadar();
+              drawRadar(
+                performance.now()
+              );
             },
-            140
+            160
           );
       },
       {
@@ -933,7 +1397,7 @@
     );
 
     new MutationObserver(
-      (mutations) => {
+      mutations => {
         if (
           mutations.some(
             mutation =>
@@ -941,14 +1405,23 @@
               "data-theme"
           )
         ) {
-          drawRadar();
+          drawRadar(
+            performance.now()
+          );
         }
       }
     ).observe(
       document.documentElement,
       {
-        attributes: true
+        attributes: true,
+        attributeFilter: [
+          "data-theme"
+        ]
       }
+    );
+
+    requestAnimationFrame(
+      radarLoop
     );
   }
 
